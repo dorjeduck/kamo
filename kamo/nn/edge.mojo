@@ -11,22 +11,30 @@ struct Edge:
     var edge_func:EF
     var weights:MV
     
-    fn __init__(inout self,edge_func:EF, n_weights:Int):
+    fn __init__(inout self,edge_func:EF, n_weights:Int,rand_weights:Bool=True):
         self.edge_func = edge_func
         self.n_weights = n_weights
-        self.weights = MV.rand(self.n_weights)
-        print(self.weights)
+        if rand_weights:
+            self.weights = MV.rand(self.n_weights)
+        else:
+            self.weights = MV(self.n_weights)
+      
+
+        
+      
         
     fn __init__(inout self,edge_func:EF,weights:MV):
         self.edge_func = edge_func
         self.n_weights = len(weights)
         self.weights = weights 
+       
         
     @always_inline
     fn __copyinit__(inout self, other: Self):
         self.edge_func = other.edge_func
         self.n_weights = other.n_weights
         self.weights = other.weights
+       
        
     @always_inline
     fn __moveinit__(inout self, owned other: Self):

@@ -6,9 +6,22 @@ from random import rand
 
 struct MoNum[dtype:DType,simd_width:Int]:
 
+
+    @staticmethod
+    fn sin(mv:MoVector[dtype,simd_width]) -> MoVector[dtype,simd_width]:
+        return MoNum[dtype,simd_width]._elemwise_func_1[sin](mv)
+    
+    @staticmethod
+    fn cos(mv:MoVector[dtype,simd_width]) -> MoVector[dtype,simd_width]:
+        return MoNum[dtype,simd_width]._elemwise_func_1[cos](mv)
+
     @staticmethod
     fn sin(mm:MoMatrix[dtype,simd_width]) -> MoMatrix[dtype,simd_width]:
         return MoNum[dtype,simd_width]._elemwise_func_1[sin](mm)
+    
+    @staticmethod
+    fn cos(mm:MoMatrix[dtype,simd_width]) -> MoMatrix[dtype,simd_width]:
+        return MoNum[dtype,simd_width]._elemwise_func_1[cos](mm)
 
     @staticmethod
     fn exp(mm:MoMatrix[dtype,simd_width]) -> MoMatrix[dtype,simd_width]:
@@ -89,6 +102,20 @@ struct MoNum[dtype:DType,simd_width:Int]:
         vectorize[matrix_matrix_vectorize, simd_width](len(mm))
         return new_mat
 
+    @staticmethod
+    fn _elemwise_func_1[
+        func: fn[dtype: DType, width: Int] (
+            SIMD[dtype, width]
+        ) -> SIMD[dtype, width] 
+        ](mv:MoVector[dtype,simd_width]) -> MoVector[dtype,simd_width]:
+       
+
+        var new_vec = MoVector[dtype,simd_width](mv.size)
+        @parameter
+        fn _fun[nelts: Int](iv: Int) -> None:
+            new_vec._vec_ptr.store[width=nelts](iv, func(mv._vec_ptr.load[width=nelts](iv)))
+        vectorize[_fun, simd_width](mv.size)
+        return new_vec
     
     @staticmethod
     fn _elemwise_func_1[
