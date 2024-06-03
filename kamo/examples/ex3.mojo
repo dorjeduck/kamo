@@ -23,7 +23,7 @@ fn main() raises:
 
     seed(now())
 
-    var epochs=30000
+    var epochs=20000
 
     var name_pred = "BSpline"
     var name_train = "sin()"
