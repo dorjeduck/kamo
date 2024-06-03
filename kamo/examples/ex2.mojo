@@ -2,7 +2,7 @@ from random.random import seed
 from time import now 
 
 from kamo import dtype,simd_width
-from kamo.monum import MoVector
+from kamo.libs.monum import MoVector
 from kamo.nn import Edge
 from kamo.nn.func.edge import ChebyshevPolynomial
 

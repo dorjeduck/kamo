@@ -1,5 +1,5 @@
 from kamo import dtype,simd_width
-from kamo.monum import MoVector,MoNum
+from kamo.libs.monum import MoVector,MoNum
 
 alias SD = Scalar[dtype]
 alias MV = MoVector[dtype,simd_width]
