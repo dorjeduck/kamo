@@ -18,6 +18,9 @@ trait EdgeFunc:
     fn __moveinit__(inout self, owned existing: Self):
         pass
 
+    fn get_gradients(self, x:MV, dloss_dy:MV) -> MV:
+        pass
+
     fn update_weights(inout self, dif: MV):
         pass
 

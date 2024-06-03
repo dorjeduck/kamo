@@ -15,13 +15,13 @@ from random import rand
 from python import Python
 
 
+
 struct MoVector[
     dtype: DType = DType.float32, simd_width: Int = 2 * simdwidthof[dtype]()
 ](Stringable, CollectionElement, Sized):
     var _vec_ptr: DTypePointer[dtype]
     var size: Int
 
-    @always_inline
     fn __init__(inout self, size: Int):
         self.size = size
         self._vec_ptr = DTypePointer[dtype].alloc(size)
@@ -40,7 +40,7 @@ struct MoVector[
 
         vectorize[splat_val, simd_width](self.size)
     
-    @always_inline
+   
     fn __init__(inout self, size: Int, *data: Scalar[dtype]):
         
         self.size = size
@@ -48,7 +48,7 @@ struct MoVector[
         for i in range(self.size):
             self._vec_ptr[i] = data[i]
 
-    @always_inline
+   
     fn __init__(inout self, size: Int, ptr: DTypePointer[dtype]):
         
         self.size = size
@@ -62,9 +62,6 @@ struct MoVector[
         for i in range(self.size):
             self._vec_ptr[i] = list[i]
 
-    
-
-    @always_inline
     fn __copyinit__(inout self, other: Self):
         self.size = other.size
         self._vec_ptr = DTypePointer[dtype].alloc(self.size)
@@ -77,9 +74,8 @@ struct MoVector[
         existing._vec_ptr = DTypePointer[dtype]()
 
     fn __del__(owned self):
-        if self.size > 0:
-            pass
-            #self._vec_ptr.free()
+        self._vec_ptr.free()
+        
 
     @always_inline
     fn __setitem__(inout self, idx:Int, val: Scalar[dtype]):
@@ -140,7 +136,7 @@ struct MoVector[
         return self.__mul__(val)
 
     fn __matmul__(self, vec: Self) -> Scalar[dtype]:
-        return (self*vec).sum()
+        return MoNum[dtype,simd_width].sum(self*vec)
 
     @always_inline
     fn __truediv__(self, s: Scalar[dtype]) -> Self:
@@ -196,15 +192,7 @@ struct MoVector[
     fn exp(self) -> Self:
         return self._elemwise_exp()
 
-    @always_inline
-    fn sum(self) -> Scalar[dtype]:
-
-        var res:Scalar[dtype] = 0
-        @parameter
-        fn _sum[nelts:Int](iv:Int):
-            res += self._vec_ptr.load[width=nelts](iv).reduce_add()
-        vectorize[_sum,simd_width](self.size)
-        return res
+    
 
     @always_inline
     fn __len__(self) -> Int:

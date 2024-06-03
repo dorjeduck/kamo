@@ -8,8 +8,18 @@ alias PI = 3.141592653589793
 struct MoNum[dtype:DType,simd_width:Int]:
 
     @staticmethod
+    fn sum(mv:MoVector[dtype,simd_width]) -> Scalar[dtype]:
+
+        var res:Scalar[dtype] = 0
+        @parameter
+        fn _sum[nelts:Int](iv:Int):
+            res += mv._vec_ptr.load[width=nelts](iv).reduce_add()
+        vectorize[_sum,simd_width](mv.size)
+        return res
+
+    @staticmethod
     fn mean(mv:MoVector[dtype,simd_width]) -> Scalar[dtype]:
-        return Self.pow(mv).sum()/len(mv)
+        return Self.sum(Self.pow(mv)/(Scalar[dtype](mv.size)))
 
     @staticmethod
     fn sin(mv:MoVector[dtype,simd_width]) -> MoVector[dtype,simd_width]:

@@ -16,11 +16,11 @@ fn main() raises:
     var x_bounds = List[SD](0,10)
     var weights = MV(List[SD](1,1,1))
 
-    var n_func = 5
+    var n_func = 11
     
     var edge = Edge[BSpline[3]](x_bounds,n_func)
 
-    var x = MV(List[SD](1.,2.,3.))
+    var x = MV(List[SD](1.,2.,10.))
 
     print(edge(x))
     print(edge(x,True))

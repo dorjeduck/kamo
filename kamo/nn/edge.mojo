@@ -27,6 +27,9 @@ struct Edge[EF:EdgeFunc]:
     fn __call__(inout self,x:MV,grad:Bool=False)->MV:
         return self.edge_func(x,grad)
 
+    fn get_gradients(self, x:MV, dloss_dy:MV) -> MV:
+        return self.edge_func.get_gradients(x,dloss_dy)
+
     fn update_weights(inout self,dif:MV):
         self.edge_func.update_weights(dif)
         
