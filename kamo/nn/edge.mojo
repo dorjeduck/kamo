@@ -1,6 +1,6 @@
 from kamo import dtype,simd_width
 from kamo.libs.monum import MoVector
-from kamo.nn.func.edge import EdgeFunc
+from kamo.func.edge import EdgeFunc
 
 alias SD = Scalar[dtype]
 alias MV = MoVector[dtype,simd_width]

@@ -5,16 +5,6 @@ alias SD = Scalar[dtype]
 alias MV = MoVector[dtype,simd_width]
 alias MN = MoNum[dtype,simd_width]
 
-#alias LOSS_FUNC = fn (MV,MV,Bool) -> SD:
-#
-#fn mse(y:MV,y_train:MV,grad:Bool=False) -> MV:
-#    if not grad:
-#        return MN.pow(y-y_train)
-#    else:
-#        return 2 * (y - y_train) / SD(len(y))
-
-
-
 trait LossFunction:
 
     @staticmethod

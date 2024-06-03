@@ -4,7 +4,7 @@ from time import now
 from kamo import dtype,simd_width
 from kamo.libs.monum import MoVector
 from kamo.nn import Edge
-from kamo.nn.func.edge import ChebyshevPolynomial
+from kamo.func.edge import ChebyshevPolynomial
 
 alias SD = Scalar[dtype]
 alias MV = MoVector[dtype,simd_width]
