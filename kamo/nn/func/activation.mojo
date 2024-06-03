@@ -14,7 +14,6 @@ fn tanh_act(x: SD, grad: Bool = False) -> SD:
         return math.tanh(x)  # math.exp(2 * x) - 1) / (math.exp(2 * x) + 1)
     return 1 - math.tanh(x) ** 2  # tanh_act(x, grad=False) ** 2
 
-
 fn sigmoid_act(x: SD, grad: Bool = False) -> SD:
     if not grad:
         return 1 / (1 + math.exp(-x))

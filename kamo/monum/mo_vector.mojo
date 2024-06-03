@@ -78,7 +78,8 @@ struct MoVector[
 
     fn __del__(owned self):
         if self.size > 0:
-            self._vec_ptr.free()
+            pass
+            #self._vec_ptr.free()
 
     @always_inline
     fn __setitem__(inout self, idx:Int, val: Scalar[dtype]):
@@ -227,11 +228,8 @@ struct MoVector[
         var res = MoMatrix[dtype](num_rows,self.size//num_rows,self._vec_ptr)
         return res
     
-    @staticmethod
-    fn rand(size: Int) -> Self:
-        var _vec_ptr = DTypePointer[dtype].alloc(size)
-        rand(_vec_ptr, size)
-        return Self(size, _vec_ptr)
+   
+
 
     @staticmethod
     fn from_numpy(np_array: PythonObject) raises -> Self:

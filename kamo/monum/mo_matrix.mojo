@@ -128,7 +128,7 @@ struct MoMatrix[
     fn __matmul__(self, vec: MoVector[dtype,simd_width]) -> MoVector[dtype,simd_width]:
         
         if self.cols != vec.size:
-            print("troube __matmul__",vec.size,self.cols,self.rows)
+            print("trouble __matmul__","vec.size",vec.size,"self.cols",self.cols,"self.rows",self.rows)
         
         var res = MoVector[dtype,simd_width](self.rows)
         for m in range(self.rows):
@@ -146,7 +146,7 @@ struct MoMatrix[
     fn __rmatmul__(self, vec: MoVector[dtype,simd_width]) -> MoVector[dtype,simd_width]:
         
         if vec.size != self.rows:
-            print("troube __rmatmul__")
+            print("trouble __rmatmul__")
         return self.transpose().__matmul__(vec)
    
 
@@ -292,13 +292,54 @@ struct MoMatrix[
         return printStr
 
     @always_inline
-    fn insert(self,pos:Int,v:MoVector[dtype,simd_width]):
+    fn insert(self,mv:MoVector[dtype,simd_width],start_pos:Int):
         
         #for i in range(len(v)):
         #    self._mat_ptr[pos+i]=v._vec_ptr[i]
         
-        memcpy(self._mat_ptr.offset(pos), v._vec_ptr, len(v))
+        memcpy(self._mat_ptr.offset(start_pos), mv._vec_ptr, len(mv))
+    
+    @always_inline
+    fn insert(self,val:Scalar[dtype],start_pos:Int,num:Int,step:Int=1):
+        ##todo optimize?
+        for i in range(num):
+            self._mat_ptr[start_pos+i*step]=val
 
+    @always_inline
+    fn insert(self,mv:MoVector[dtype,simd_width],start_pos:Int,step:Int=1):
+        ##todo optimize?
+        for i in range(len(mv)):
+            self._mat_ptr[start_pos+i*step]=mv[i]
+
+    @always_inline
+    fn col_insert(self,val:Scalar[dtype],col:Int):
+        self.insert(val,col,self.rows,self.cols)
+    
+    @always_inline
+    fn col_insert(self,mv:MoVector[dtype,simd_width],col:Int):
+        self.insert(mv,col,self.rows)
+
+    
+    @always_inline
+    fn get_row(self,row:Int) -> MoVector[dtype,simd_width]:
+        ##todo optimize
+        var res = MoVector[dtype,simd_width](self.rows)
+
+        for i in range(self.cols):
+            res[i] = self[row,i]
+            
+        return res
+    
+    @always_inline
+    fn get_col(self,col:Int) -> MoVector[dtype,simd_width]:
+        var res = MoVector[dtype,simd_width](self.rows)
+
+        for i in range(self.rows):
+            res[i] = self[i,col]
+
+        return res
+        
+    
     @staticmethod
     fn rand(*dims: Int) -> Self:
         var _mat_ptr = DTypePointer[dtype].alloc(dims[0] * dims[1])

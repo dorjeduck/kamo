@@ -4,7 +4,7 @@ from time import now
 from kamo import dtype,simd_width
 from kamo.monum import MoVector
 from kamo.nn import Edge
-from kamo.nn.func import get_weighted_bsplines
+from kamo.nn.func.edge import BSpline
 
 alias SD = Scalar[dtype]
 alias MV = MoVector[dtype,simd_width]
@@ -17,13 +17,11 @@ fn main() raises:
     var weights = MV(List[SD](1,1,1))
 
     var n_func = 5
-    var degree = 3
-
-    var edge_func = get_weighted_bsplines(x_bounds, n_func, degree)
-
-    var edge = Edge(edge_func,n_func)
+    
+    var edge = Edge[BSpline[3]](x_bounds,n_func)
 
     var x = MV(List[SD](1.,2.,3.))
 
     print(edge(x))
+    print(edge(x,True))
 

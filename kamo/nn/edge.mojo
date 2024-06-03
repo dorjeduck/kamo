@@ -1,53 +1,38 @@
 from kamo import dtype,simd_width
 from kamo.monum import MoVector
+from kamo.nn.func.edge import EdgeFunc
 
 alias SD = Scalar[dtype]
 alias MV = MoVector[dtype,simd_width]
-alias EF = fn ( x:MV, w:MV,/,grad:Bool=False) escaping -> MV
 
-struct Edge:
+struct Edge[EF:EdgeFunc]:
 
-    var n_weights:Int
     var edge_func:EF
-    var weights:MV
     
-    fn __init__(inout self,edge_func:EF, n_weights:Int,rand_weights:Bool=True):
-        self.edge_func = edge_func
-        self.n_weights = n_weights
-        if rand_weights:
-            self.weights = MV.rand(self.n_weights)
-        else:
-            self.weights = MV(self.n_weights)
-      
-
-        
-      
-        
-    fn __init__(inout self,edge_func:EF,weights:MV):
-        self.edge_func = edge_func
-        self.n_weights = len(weights)
-        self.weights = weights 
-       
+    
+    fn __init__(inout self,x_bounds:List[SD], n_func:Int,rand_weights:Bool=True) raises:
+        self.edge_func = EF(x_bounds,n_func)
+            
+    fn __init__(inout self,x_bounds:List[SD],weights:MV) raises:
+        self.edge_func = EF(x_bounds,len(weights))
         
     @always_inline
     fn __copyinit__(inout self, other: Self):
         self.edge_func = other.edge_func
-        self.n_weights = other.n_weights
-        self.weights = other.weights
-       
-       
+        
     @always_inline
     fn __moveinit__(inout self, owned other: Self):
-        self.edge_func = other.edge_func
-        self.n_weights = other.n_weights
-        self.weights = other.weights^
+        self.edge_func = other.edge_func^
        
     fn __call__(inout self,x:MV,grad:Bool=False)->MV:
-        return self.edge_func(x,self.weights,grad)
+        return self.edge_func(x,grad)
+
+    fn update_weights(inout self,dif:MV):
+        self.edge_func.update_weights(dif)
         
     @staticmethod
-    fn get_list(size:Int,edge_func:EF, n_weights:Int) -> List[Self]:
-        var res = List[Self](capacity=size)
+    fn get_list(size:Int,edge_func:EF, n_weights:Int) -> List[Self[EF]]:
+        var res = List[Self[EF]](capacity=size)
         for i in range(size):
-            res.append(Self(edge_func,n_weights))
+            res.append(Self[EF](self.x_bounds,n_weights))
         return res
