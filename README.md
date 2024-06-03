@@ -2,6 +2,11 @@
 
 Kolmogorov-Arnold Networks in Mojo
 
+My personal journing into learning about [KAN](https://github.com/KindXiaoming/pykans) using [Mojo](https://docs.modular.com/mojo/manual/).
+Starting with the new kid on the block—edges with optimizable functions—I'll be piecing
+together everything needed for KANs, as I find time. 
+For now, the focus is on understanding the concepts rather than optimizing for performance.
+
 ## Empowering Edges
 
 | **B-Spline** | **Chebyshev** |
