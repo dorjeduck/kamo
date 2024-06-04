@@ -1,6 +1,7 @@
 from math import abs
 
 from kamo import dtype, simd_width
+from kamo.func import silu
 from kamo.libs.monum import MoVector, MoMatrix, MoNum
 
 alias SD = Scalar[dtype]
@@ -10,7 +11,7 @@ alias MM = MoMatrix[dtype, simd_width]
 
 alias tolerance_denominators = 1e-10
 
-struct BSpline[SPLINE_DEGREE: Int = 3](EdgeFunc):
+struct BSplineSilu[SPLINE_DEGREE: Int = 3,ADD_SILU:Bool=True](EdgeFunc):
     var x_bounds: List[SD]
     var num_trainable_params: Int
     var weights: MV
@@ -25,17 +26,39 @@ struct BSpline[SPLINE_DEGREE: Int = 3](EdgeFunc):
 
         self._set_uniform_knots()
 
-     fn __call__(self, x: MV, grad: Bool = False) -> MV:
+    fn __copyinit__(inout self, existing: Self):
+        self.x_bounds = existing.x_bounds
+        self.num_trainable_params = existing.num_trainable_params
+        self.weights = existing.weights
+        self.knots = existing.knots
+
+    fn __moveinit__(inout self, owned existing: Self):
+        self.x_bounds = existing.x_bounds^
+        self.num_trainable_params = existing.num_trainable_params
+        self.weights = existing.weights^
+        self.knots = existing.knots^
+
+    fn __del__(owned self):
+        pass
+
+
+
+    fn __call__(self, x: MV, grad: Bool = False) -> MV:
        
         var res = MV(len(x))
+        var start = 1 if ADD_SILU else 0
 
-        if not grad:
-            for i in range(len(self.weights)):
+        if not grad:    
+            if ADD_SILU:
+                res += self.weights[0]*silu(x)
+           
+            for i in range(start,self.weights.size-1):
                 var b = self.basis_function(i, SPLINE_DEGREE, x)
                 res += b * self.weights[i]
-
         else:
-            for i in range(len(self.weights)):
+            if ADD_SILU:
+                res += self.weights[0]*silu(x,True)
+            for i in range(start,self.weights.size):
                 var b_derivative = self.basis_function_derivative(
                     i, SPLINE_DEGREE, x
                 )
@@ -122,22 +145,9 @@ struct BSpline[SPLINE_DEGREE: Int = 3](EdgeFunc):
             
             return term1 - term2
 
-    fn __copyinit__(inout self, existing: Self):
-        self.x_bounds = existing.x_bounds
-        self.num_trainable_params = existing.num_trainable_params
-        self.weights = existing.weights
-        self.knots = existing.knots
-
-    fn __moveinit__(inout self, owned existing: Self):
-        self.x_bounds = existing.x_bounds^
-        self.num_trainable_params = existing.num_trainable_params
-        self.weights = existing.weights^
-        self.knots = existing.knots^
-
-    fn __del__(owned self):
-        pass
-
-
+   
+    
+     
     fn _set_uniform_knots(inout self):
         var num_knots = len(self.knots)
 

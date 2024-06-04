@@ -5,7 +5,7 @@ from kamo import dtype,simd_width
 from kamo.libs.monum import MoNum,MoVector,PI
 from kamo.nn import Edge
 from kamo.func import SquaredLoss
-from kamo.func.edge import BSpline
+from kamo.func.edge import BSplineSilu
 
 from kamo.libs.mopro import progress_bar,BarSettings
 
@@ -16,46 +16,56 @@ alias MV = MoVector[dtype,simd_width]
 alias MN = MoNum[dtype,simd_width]
 
 
-   
-
-
 fn main() raises:
 
-    seed(now())
+    #seed(now())
 
+    alias img_output = False
+
+    var num_trainable_params = 11
     var epochs=20000
-
-    var name_pred = "BSpline"
+    var name_pred = "BSplineSilu"
     var name_train = "sin()"
     
     var learning_rate=0.1
     var x_bounds = List[SD](0,4*PI)
 
+    # Edge
+
+    var edge = Edge[BSplineSilu[3]](x_bounds,num_trainable_params)
+
     # Training data
     var x_train = MN.linspace(x_bounds[0], x_bounds[1], 101)
     var y_train = MN.sin(x_train)
 
-    # Edge function
-    var num_trainable_params = 11
-    
-    var edge = Edge[BSpline[3]](x_bounds,num_trainable_params)
 
     # Training
-
-    var pm = PlotManager()
-
+    
     var y_pred = edge(x_train)
 
-    pm.save_prediction_graph(
-                x_train,
-                y_train,
-                y_pred,
-                "Epoch " + str(0),
-                name_train,
-                name_pred,
-                "imgs/bspline-" + str(0) + ".png"
-            )
+     # Image output 
+
+    var pm = PlotManager()
     
+    @parameter
+    fn save_image(step:Int) raises:
+        if img_output:
+           
+            pm.save_prediction_graph(
+                        x_train,
+                        y_train,
+                        y_pred,
+                        "Epoch " + str(step),
+                        name_train,
+                        name_pred,
+                        "imgs/BSplineSilu-" + str(step) + ".png"
+                    )
+         
+            
+    save_image(0)
+
+    var start = now()
+
     for step in range(epochs+1):
         #forward pass
         var y_pred = edge(x_train)
@@ -71,25 +81,9 @@ fn main() raises:
 
         if (step+1)%100 == 0:
             print("Epoch: " + str(step+1) + ", loss:" + str(loss))
-            pm.save_prediction_graph(
-                x_train,
-                y_train,
-                y_pred,
-                "Epoch " + str(step+1),
-                name_train,
-                name_pred,
-                "imgs/bspline-" + str(step+1) + ".png"
-            )
             
-
-   
-
+            save_image(step+1)
     
-    
+    var elapased = (now()-start)/1e9
 
-
-
-
-   
-
-
+    print("Training time:",elapased,"sec")

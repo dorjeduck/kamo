@@ -37,6 +37,12 @@ struct MoNum[dtype:DType,simd_width:Int]:
     fn cos(mm:MoMatrix[dtype,simd_width]) -> MoMatrix[dtype,simd_width]:
         return MoNum[dtype,simd_width]._elemwise_func_1[cos](mm)
 
+
+    @staticmethod
+    fn exp(mv:MoVector[dtype,simd_width]) -> MoVector[dtype,simd_width]:
+        return MoNum[dtype,simd_width]._elemwise_func_1[exp](mv)
+
+
     @staticmethod
     fn exp(mm:MoMatrix[dtype,simd_width]) -> MoMatrix[dtype,simd_width]:
         return MoNum[dtype,simd_width]._elemwise_func_1[exp](mm)

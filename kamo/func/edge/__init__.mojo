@@ -1,3 +1,3 @@
 from .edge_func import EdgeFunc
-from .bspline import BSpline
+from .bspline_silu import BSplineSilu
 from .chebyshev import ChebyshevPolynomial

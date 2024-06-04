@@ -1,7 +1,17 @@
 import math
-from mokan import dtype
+from kamo import dtype,simd_width
+from kamo.libs.monum import MoNum,MoVector
 
+alias MN = MoNum[dtype,simd_width]
+alias MV = MoVector[dtype,simd_width]
 alias SD = Scalar[dtype]
+
+fn silu(x:MV,grad: Bool = False) -> MV:
+    if not grad:
+        return x/(1.0+MN.exp(x))
+    else:
+        return (1.0 + MN.exp(-x) + x *MN.exp(-x))/MN.pow(1.0+MN.exp(-x))
+   
 
 fn relu(x: SD, grad: Bool = False) -> SD:
     if not grad:

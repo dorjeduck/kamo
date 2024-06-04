@@ -11,12 +11,12 @@ For now, the focus is on understanding the concepts rather than optimizing for p
 
 | **B-Spline** | **Chebyshev** |
 |--------------|--------------|
-| <img src="imgs/bspline.gif" width="300"/> | <img src="imgs/chebyshev.gif" width="300"/> |
+| <img src="imgs/BSplineSilu.gif" width="300"/> | <img src="imgs/chebyshev.gif" width="300"/> |
 
 ## Changelog
 
 - 2024.06.03
-  - Implementation of edge functions (BSpline and Chebyshev Polynoms)
+  - Implementation of edge functions (BSplineSilu and Chebyshev Polynoms)
   - Edge training examples
   
 - 2024.06.02

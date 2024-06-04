@@ -4,7 +4,7 @@ from time import now
 from kamo import dtype,simd_width
 from kamo.libs.monum import MoVector
 from kamo.nn import Edge
-from kamo.func.edge import BSpline
+from kamo.func.edge import BSplineSilu
 
 alias SD = Scalar[dtype]
 alias MV = MoVector[dtype,simd_width]
@@ -18,7 +18,7 @@ fn main() raises:
 
     var num_trainable_params = 11
     
-    var edge = Edge[BSpline[3]](x_bounds,num_trainable_params)
+    var edge = Edge[BSplineSilu[3]](x_bounds,num_trainable_params)
 
     var x = MV(List[SD](1.,2.,10.))
 
