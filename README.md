@@ -15,6 +15,9 @@ For now, the focus is on understanding the concepts rather than optimizing for p
 
 ## Changelog
 
+
+- 2024.06.04
+  - Performance optimization edge functions. 
 - 2024.06.03
   - Implementation of edge functions (BSplineSilu and Chebyshev Polynoms)
   - Edge training examples
