@@ -9,7 +9,7 @@ from kamo.func.edge import ChebyshevPolynomial
 
 from kamo.libs.mopro import progress_bar,BarSettings
 
-from kamo.utils import PlotManager
+from kamo.utils import PlotManager,int_to_padded_string
 
 alias SD = Scalar[dtype]
 alias MV = MoVector[dtype,simd_width]
@@ -58,7 +58,7 @@ fn main() raises:
                         "Epoch " + str(step),
                         name_train,
                         name_pred,
-                        "imgs/BSplineSilu-" + str(step) + ".png"
+                        "imgs/BSplineSilu-" + int_to_padded_string(step,5,"0") + ".png"
                     )
          
             

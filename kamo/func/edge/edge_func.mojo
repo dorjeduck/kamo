@@ -9,7 +9,7 @@ trait EdgeFunc:
     fn __init__(inout self, x_bounds: List[SD], num_trainable_params: Int):
         pass
 
-    fn __call__(self, x: MV, grad: Bool = False) -> MV:
+    fn __call__(inout self, x: MV, grad: Bool = False) -> MV:
         pass
 
     fn __copyinit__(inout self, existing: Self):
@@ -18,7 +18,7 @@ trait EdgeFunc:
     fn __moveinit__(inout self, owned existing: Self):
         pass
 
-    fn calc_gradients(self, x:MV, dloss_dy:MV) -> MV:
+    fn calc_gradients(inout self, x:MV, dloss_dy:MV) -> MV:
         pass
 
     fn update_weights(inout self, dif: MV):

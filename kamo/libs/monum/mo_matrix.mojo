@@ -66,7 +66,7 @@ struct MoMatrix[
 
     fn __del__(owned self):
         self._mat_ptr.free()
-
+        
     fn __setitem__(inout self, elem: Int, val: Scalar[dtype]):
         self._mat_ptr.store[width=1](elem, val)
 
@@ -306,7 +306,7 @@ struct MoMatrix[
             self._mat_ptr[start_pos+i*step]=val
 
     @always_inline
-    fn insert(self,mv:MoVector[dtype,simd_width],start_pos:Int,step:Int=1):
+    fn insert(self,mv:MoVector[dtype,simd_width],start_pos:Int,step:Int):
         ##todo optimize?
         for i in range(len(mv)):
             self._mat_ptr[start_pos+i*step]=mv[i]
@@ -319,16 +319,22 @@ struct MoMatrix[
     fn col_insert(self,mv:MoVector[dtype,simd_width],col:Int):
         self.insert(mv,col,self.rows)
 
-    
     @always_inline
     fn get_row(self,row:Int) -> MoVector[dtype,simd_width]:
-        ##todo optimize
+       
         var res = MoVector[dtype,simd_width](self.rows)
-
-        for i in range(self.cols):
-            res[i] = self[row,i]
-            
+        self.get_row(row,res) 
         return res
+
+    
+    fn get_row(self,row:Int,inout mv:MoVector[dtype,simd_width]):
+       
+        #@parameter
+        #fn _getrow[width:Int](iv:Int):
+        #    mv.store[width](iv,self.load[width](row,iv))
+        #vectorize[_getrow,simd_width](self.cols) 
+
+        memcpy(mv._vec_ptr,self._mat_ptr.offset(row*self.cols), len(mv))
     
     @always_inline
     fn get_col(self,col:Int) -> MoVector[dtype,simd_width]:

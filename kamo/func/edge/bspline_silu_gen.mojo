@@ -17,11 +17,6 @@ struct BSplineSilu[SPLINE_DEGREE: Int = 3,ADD_SILU:Bool=True](EdgeFunc):
     var weights: MV
     var knots: MV
 
-    var func_out:MM
-    var tmp_x_size:MV
-
-
-
     fn __init__(inout self, x_bounds: List[SD], num_trainable_params: Int):
         self.x_bounds = x_bounds
         self.num_trainable_params = num_trainable_params
@@ -29,53 +24,35 @@ struct BSplineSilu[SPLINE_DEGREE: Int = 3,ADD_SILU:Bool=True](EdgeFunc):
         self.weights = MN.rand(num_trainable_params)
         self.knots = MV(num_trainable_params+SPLINE_DEGREE+1)
 
-        self.func_out = MM(0,0)
-        self.tmp_x_size = MV(0)
-        
         self.set_uniform_knots()
-
-
 
     fn __copyinit__(inout self, existing: Self):
         self.x_bounds = existing.x_bounds
         self.num_trainable_params = existing.num_trainable_params
         self.weights = existing.weights
         self.knots = existing.knots
-        self.func_out = existing.func_out
-        self.tmp_x_size = existing.tmp_x_size
 
     fn __moveinit__(inout self, owned existing: Self):
         self.x_bounds = existing.x_bounds^
         self.num_trainable_params = existing.num_trainable_params
         self.weights = existing.weights^
         self.knots = existing.knots^
-        self.func_out = existing.func_out^
-        self.tmp_x_size = existing.tmp_x_size^
 
     fn __del__(owned self):
         pass
 
-    fn __call__(inout self, xx: MV, grad: Bool = False) -> MV:
-        var x = self.scale_to_unit(xx)
-
-        if self.func_out.cols != x.size:
-            self.func_out = MM(self.weights.size,x.size)
-            self.tmp_x_size = MV(x.size)
-            
+    fn __call__(self, x: MV, grad: Bool = False) -> MV:
        
-        var res = MV(x.size)
+        var res = MV(len(x))
         var start = 1 if ADD_SILU else 0
 
         if not grad:    
             if ADD_SILU:
-                var s = silu(x)
-                res += self.weights[0]*s
-                self.func_out.insert(s,0)
+                res += self.weights[0]*silu(x)
            
             for i in range(start,self.weights.size-1):
                 var b = self.basis_function(i, SPLINE_DEGREE, x)
                 res += b * self.weights[i]
-                self.func_out.insert(b,i*x.size)
         else:
             if ADD_SILU:
                 res += self.weights[0]*silu(x,True)
@@ -91,16 +68,12 @@ struct BSplineSilu[SPLINE_DEGREE: Int = 3,ADD_SILU:Bool=True](EdgeFunc):
     fn update_weights(inout self, dif: MV):
         self.weights += dif
 
-    fn calc_gradients(inout self, xx:MV, dloss_dy:MV) -> MV:
-        var x = self.scale_to_unit(xx)
-        var gradients = MV(self.num_trainable_params)
+    fn calc_gradients(self, x:MV, dloss_dy:MV) -> MV:
 
+        var gradients = MV(self.num_trainable_params)
         for i in range(self.num_trainable_params):
-            #gradients[i] = MN.sum(dloss_dy * self.basis_function(i, SPLINE_DEGREE, x))/x.size
-            
-            self.func_out.get_row(i,self.tmp_x_size)
-            gradients[i] = MN.sum(dloss_dy * self.tmp_x_size)/x.size
-            
+            gradients[i] = MN.sum(dloss_dy * self.basis_function(i, SPLINE_DEGREE, x))/x.size
+        
         return gradients
 
     fn basis_function(self, i: Int, k: Int, x: MV) -> MV:
@@ -109,7 +82,7 @@ struct BSplineSilu[SPLINE_DEGREE: Int = 3,ADD_SILU:Bool=True](EdgeFunc):
 
         if k == 0:
             for nn in range(x.size):
-                if i >= self.knots.size - SPLINE_DEGREE-2: 
+                if i >= len(self.knots) - SPLINE_DEGREE-2: 
                     if self.knots[i] <= x[nn] and x[nn] <= self.knots[i + 1]:
                         res[nn] = 1.0
                     else:
@@ -170,25 +143,19 @@ struct BSplineSilu[SPLINE_DEGREE: Int = 3,ADD_SILU:Bool=True](EdgeFunc):
             
             return term1 - term2
 
-    @always_inline
-    fn scale_to_unit(self, x:MV)->MV:
-        """Scale x to the unit interval [-1, 1]."""
-        return 2.0 * (x - self.x_bounds[0]) / (self.x_bounds[1] - self.x_bounds[0]) - 1.0
-
-
     fn set_uniform_knots(inout self):
         var num_knots = len(self.knots)
 
         for i in range(SPLINE_DEGREE):
-            self.knots[i] = -1
+            self.knots[i] = self.x_bounds[0]
 
         var n_mid = num_knots - 2*(SPLINE_DEGREE)
        
-        var step = 2 / (n_mid - 1)
+        var step = (self.x_bounds[1] - self.x_bounds[0]) / (n_mid - 1)
 
         for i in range(n_mid ):
-            self.knots[SPLINE_DEGREE +i] = -1 + i * step
-       
-        for i in range(SPLINE_DEGREE+1):
-            self.knots[num_knots - 1 - i] = 1
+            self.knots[SPLINE_DEGREE +i] = self.x_bounds[0] + i * step
+        self.knots[SPLINE_DEGREE + n_mid] = self.x_bounds[1]
 
+        for i in range(SPLINE_DEGREE):
+            self.knots[num_knots - 1 - i] = self.x_bounds[1]

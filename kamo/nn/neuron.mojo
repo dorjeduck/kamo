@@ -1,7 +1,7 @@
 from mokan import dtype,simd_width
 from mokan.monum import MoVector
 
-from mokan.nn.func import relu
+from mokan.nn.func import relu,tanh_act
 
 alias SD = Scalar[dtype]
 alias MV = MoVector[dtype,simd_width]
@@ -20,7 +20,7 @@ struct Neuron:
         self.bias = 0
         self.activation = activation
     
-    fn __init__(inout self, weights:List[SD],bias:SD,activation:ACF = relu):
+    fn __init__(inout self, weights:List[SD],bias:SD,activation:ACF = tanh_act):
         self.n_in = len(weights)
         self.weights = MV(weights) # n. inputs 
         self.bias = bias
@@ -40,9 +40,13 @@ struct Neuron:
         self.bias = other.bias 
         self.activation = other.activation
        
-    fn __call__(self,x:MV,grad:Bool=False)->SD:
-        return self.activation(x @ self.weights + self.bias,grad)
+    fn __call__(self,mx:MM,grad:Bool=False)->MV:
+        if not grad:
+            return self.activation(MN.sum(mx @ self.weights) + self.bias)
+        else:
+            return self.activation(MN.sum(mx @ self.weights) + self.bias, True) * np.ones(self.n_in)
 
+            
 
     fn calc_gradients(self, x:MV, dloss_dy:MV) -> MV:
         return MV()

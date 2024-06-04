@@ -6,6 +6,14 @@ alias MN = MoNum[dtype,simd_width]
 alias MV = MoVector[dtype,simd_width]
 alias SD = Scalar[dtype]
 
+
+fn identity(x:MV,grad: Bool = False) -> MV:
+    if not grad:
+        return x
+    else:
+        return MV(x.size,1.0)
+   
+
 fn silu(x:MV,grad: Bool = False) -> MV:
     if not grad:
         return x/(1.0+MN.exp(x))
