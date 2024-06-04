@@ -40,9 +40,7 @@ struct BSplineSilu[SPLINE_DEGREE: Int = 3,ADD_SILU:Bool=True](EdgeFunc):
 
     fn __del__(owned self):
         pass
-
-
-
+        
     fn __call__(self, x: MV, grad: Bool = False) -> MV:
        
         var res = MV(len(x))
@@ -145,9 +143,6 @@ struct BSplineSilu[SPLINE_DEGREE: Int = 3,ADD_SILU:Bool=True](EdgeFunc):
             
             return term1 - term2
 
-   
-    
-     
     fn _set_uniform_knots(inout self):
         var num_knots = len(self.knots)
 

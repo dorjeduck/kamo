@@ -18,13 +18,13 @@ alias MN = MoNum[dtype,simd_width]
 
 fn main() raises:
 
-    #seed(now())
+    seed(now())
 
     alias img_output = False
 
     var num_trainable_params = 11
     var epochs=20000
-    var name_pred = "BSplineSilu"
+    var name_pred = "BSpline + Silu"
     var name_train = "sin()"
     
     var learning_rate=0.1
