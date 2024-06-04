@@ -43,6 +43,15 @@ struct Neuron:
     fn __call__(self,x:MV,grad:Bool=False)->SD:
         return self.activation(x @ self.weights + self.bias,grad)
 
+
+    fn calc_gradients(self, x:MV, dloss_dy:MV) -> MV:
+        return MV()
+        #return self.edge_func.calc_gradients(x,dloss_dy)
+
+    fn update_weights(inout self,dif:MV):
+        pass
+        #self.edge_func.update_weights(dif)
+
     @staticmethod
     fn get_list(size:Int,n_in:Int,activation:ACF=relu) -> List[Self]:
         var res = List[Self](capacity=size)

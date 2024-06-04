@@ -32,9 +32,9 @@ fn main() raises:
     var y_train = MN.sin(x_train)
 
     # Edge function
-    var n_func = 11
+    var num_trainable_params = 11
     
-    var edge = Edge[ChebyshevPolynomial](x_bounds,n_func)
+    var edge = Edge[ChebyshevPolynomial](x_bounds,num_trainable_params)
 
     # Training
 

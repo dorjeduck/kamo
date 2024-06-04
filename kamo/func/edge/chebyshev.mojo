@@ -9,30 +9,29 @@ alias MM = MoMatrix[dtype, simd_width]
 
 struct ChebyshevPolynomial(EdgeFunc):
     var x_bounds: List[SD]
-    var n_func: Int
+    var num_trainable_params: Int
     var weights: MV
     var nodes: MV
 
- 
 
-    fn __init__(inout self, x_bounds: List[SD], n_func: Int):
+    fn __init__(inout self, x_bounds: List[SD], num_trainable_params: Int):
         self.x_bounds = x_bounds
-        self.n_func = n_func
+        self.num_trainable_params = num_trainable_params
 
-        self.weights = MV(n_func, 1)  # MN.rand(n_func)
-        self.nodes = MV(n_func)
+        self.weights = MV(num_trainable_params, 1)  # MN.rand(num_trainable_params)
+        self.nodes = MV(num_trainable_params)
 
         self.set_chebyshev_nodes()
 
     fn __copyinit__(inout self, existing: Self):
         self.x_bounds = existing.x_bounds
-        self.n_func = existing.n_func
+        self.num_trainable_params = existing.num_trainable_params
         self.weights = existing.weights
         self.nodes = existing.nodes
 
     fn __moveinit__(inout self, owned existing: Self):
         self.x_bounds = existing.x_bounds^
-        self.n_func = existing.n_func
+        self.num_trainable_params = existing.num_trainable_params
         self.weights = existing.weights^
         self.nodes = existing.nodes^
 
@@ -42,8 +41,8 @@ struct ChebyshevPolynomial(EdgeFunc):
     fn set_chebyshev_nodes(inout self):
         """Generate Chebyshev nodes within the interval [-1, 1]."""
 
-        var i = MN.arange(1, self.n_func + 1)
-        self.nodes = MN.cos((2.0 * i - 1.0) / (2.0 * self.n_func) * PI)
+        var i = MN.arange(1, self.num_trainable_params + 1)
+        self.nodes = MN.cos((2.0 * i - 1.0) / (2.0 * self.num_trainable_params) * PI)
         
 
     def scale_to_unit(self, x:MV)->MV:
@@ -59,10 +58,10 @@ struct ChebyshevPolynomial(EdgeFunc):
         var res = MV(x.size)
 
         if not grad:
-            for i in range(self.n_func):
+            for i in range(self.num_trainable_params):
                 res += self.weights[i] * self.chebyshev_polynomial(x, i)
         else:
-            for i in range(self.n_func):
+            for i in range(self.num_trainable_params):
                 res += self.weights[i] * self.chebyshev_polynomial_derivative(
                     x, i
                 )
@@ -118,8 +117,8 @@ struct ChebyshevPolynomial(EdgeFunc):
 
     fn calc_gradients(self, x:MV, dloss_dy:MV) -> MV:
         
-        var gradients = MV(self.n_func)
-        for i in range(self.n_func):
+        var gradients = MV(self.num_trainable_params)
+        for i in range(self.num_trainable_params):
             gradients[i] = MN.sum(dloss_dy * self.chebyshev_polynomial(x, i))/x.size
         
         return gradients

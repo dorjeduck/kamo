@@ -16,9 +16,9 @@ fn main() raises:
     var x_bounds = List[SD](0,10)
     var weights = MV(List[SD](1,1,1))
 
-    var n_func = 5
+    var num_trainable_params = 5
     
-    var edge = Edge[ChebyshevPolynomial[4]](x_bounds,n_func)
+    var edge = Edge[ChebyshevPolynomial[4]](x_bounds,num_trainable_params)
 
     var x = MV(List[SD](0,5,10))
 

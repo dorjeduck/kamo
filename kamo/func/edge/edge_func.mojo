@@ -6,7 +6,7 @@ alias MV = MoVector[dtype, simd_width]
 
 
 trait EdgeFunc:
-    fn __init__(inout self, x_bounds: List[SD], n_func: Int):
+    fn __init__(inout self, x_bounds: List[SD], num_trainable_params: Int):
         pass
 
     fn __call__(self, x: MV, grad: Bool = False) -> MV:
@@ -18,7 +18,7 @@ trait EdgeFunc:
     fn __moveinit__(inout self, owned existing: Self):
         pass
 
-    fn get_gradients(self, x:MV, dloss_dy:MV) -> MV:
+    fn calc_gradients(self, x:MV, dloss_dy:MV) -> MV:
         pass
 
     fn update_weights(inout self, dif: MV):

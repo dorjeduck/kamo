@@ -36,9 +36,9 @@ fn main() raises:
     var y_train = MN.sin(x_train)
 
     # Edge function
-    var n_func = 11
+    var num_trainable_params = 11
     
-    var edge = Edge[BSpline[3]](x_bounds,n_func)
+    var edge = Edge[BSpline[3]](x_bounds,num_trainable_params)
 
     # Training
 
@@ -65,7 +65,7 @@ fn main() raises:
 
         #backward pass
         var dloss_dy = SquaredLoss.dloss_dy(y_pred,y_train)
-        var gradients = edge.get_gradients(x_train,dloss_dy)
+        var gradients = edge.calc_gradients(x_train,dloss_dy)
        
         edge.update_weights(-learning_rate * gradients)
 
