@@ -7,7 +7,7 @@ alias MV = MoVector[dtype, simd_width]
 alias MM = MoMatrix[dtype, simd_width]
 
 
-struct ChebyshevPolynomial[degree: Int = 3](EdgeFunc):
+struct ChebyshevPolynomial(EdgeFunc):
     var x_bounds: List[SD]
     var n_func: Int
     var weights: MV
@@ -116,7 +116,7 @@ struct ChebyshevPolynomial[degree: Int = 3](EdgeFunc):
                 vec_prime_minus_one = res_prime
             return res_prime
 
-    fn get_gradients(self, x:MV, dloss_dy:MV) -> MV:
+    fn calc_gradients(self, x:MV, dloss_dy:MV) -> MV:
         
         var gradients = MV(self.n_func)
         for i in range(self.n_func):

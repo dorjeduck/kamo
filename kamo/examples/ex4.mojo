@@ -34,7 +34,7 @@ fn main() raises:
     # Edge function
     var n_func = 11
     
-    var edge = Edge[ChebyshevPolynomial[4]](x_bounds,n_func)
+    var edge = Edge[ChebyshevPolynomial](x_bounds,n_func)
 
     # Training
 
@@ -52,7 +52,7 @@ fn main() raises:
         
         var dy_dw = edge(x_train,True)
 
-        var gradients = edge.get_gradients(x_train,dloss_dy)
+        var gradients = edge.calc_gradients(x_train,dloss_dy)
        
         
         edge.update_weights(-learning_rate * gradients)
