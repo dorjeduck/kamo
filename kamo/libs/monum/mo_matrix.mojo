@@ -240,24 +240,7 @@ struct MoMatrix[
 
    
 
-    @always_inline
-    fn sum( self, axis: Int) -> MoVector[dtype]:
-        if axis == 0:
-            var res = MoVector[dtype](self.cols)
-            for j in range(self.cols):
-                for i in range(self.rows):
-                    res[j] += self[i, j]
-            return res
-        else:
-            var res = MoVector[dtype](self.rows)
-            for i in range(self.rows):
-
-                @parameter
-                fn _sum_row[nelts: Int](iv: Int):
-                    res[i] += self.load[nelts](i, iv).reduce_add()
-
-                vectorize[_sum_row, simd_width](self.cols)
-            return res
+    
 
     @always_inline
     fn flatten(self) -> MoVector[dtype,simd_width]:

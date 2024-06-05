@@ -18,7 +18,7 @@ fn main() raises:
 
     var num_trainable_params = 5
     
-    var edge = Edge[ChebyshevPolynomial[4]](x_bounds,num_trainable_params)
+    var edge = Edge[ChebyshevPolynomial](num_trainable_params,x_bounds)
 
     var x = MV(List[SD](0,5,10))
 

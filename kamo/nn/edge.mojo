@@ -9,12 +9,9 @@ struct Edge[EF:EdgeFunc]:
 
     var edge_func:EF
     
-    
-    fn __init__(inout self,x_bounds:List[SD], num_trainable_params:Int,rand_weights:Bool=True) raises:
-        self.edge_func = EF(x_bounds,num_trainable_params)
+    fn __init__(inout self,num_trainable_params:Int,x_bounds:List[SD]= List[SD](-1,1),rand_weights:Bool=True) raises:
+        self.edge_func = EF(num_trainable_params,x_bounds)
             
-    fn __init__(inout self,x_bounds:List[SD],weights:MV) raises:
-        self.edge_func = EF(x_bounds,len(weights))
         
     @always_inline
     fn __copyinit__(inout self, other: Self):
@@ -34,8 +31,8 @@ struct Edge[EF:EdgeFunc]:
         self.edge_func.update_weights(dif)
         
     @staticmethod
-    fn get_list(size:Int,edge_func:EF, n_weights:Int) -> List[Self[EF]]:
-        var res = List[Self[EF]](capacity=size)
+    fn get_list(size:Int,num_trainable_params:Int,x_bounds:List[SD]= List[SD](-1,1)) raises -> List[Self]:
+        var res = List[Self](capacity=size)
         for i in range(size):
-            res.append(Self[EF](self.x_bounds,n_weights))
+            res.append(Self(x_bounds,num_trainable_params))
         return res

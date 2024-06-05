@@ -17,7 +17,7 @@ struct ChebyshevPolynomial(EdgeFunc):
     var tmp_x_size:MV
 
 
-    fn __init__(inout self, x_bounds: List[SD], num_trainable_params: Int):
+    fn __init__(inout self, num_trainable_params: Int,x_bounds: List[SD]):
         self.x_bounds = x_bounds
         self.num_trainable_params = num_trainable_params
 

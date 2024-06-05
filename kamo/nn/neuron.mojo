@@ -1,64 +1,54 @@
-from mokan import dtype,simd_width
-from mokan.monum import MoVector
+from kamo import dtype,simd_width
+from kamo.libs.monum import MoVector,MoMatrix,MoNum
 
-from mokan.nn.func import relu,tanh_act
+from kamo.func import relu,tanh_act
 
 alias SD = Scalar[dtype]
+alias MM = MoMatrix[dtype,simd_width]
+alias MN = MoNum[dtype,simd_width]
 alias MV = MoVector[dtype,simd_width]
 alias ACF = fn(SD,Bool)->SD
 
-struct Neuron:
+struct Neuron[Normalize:Bool=False]:
 
     var n_in:Int
-    var weights:MV
-    var bias:SD
-    var activation: ACF
    
-    fn __init__(inout self, n_in:Int,activation:ACF = relu ):
+    fn __init__(inout self, n_in:Int ):
         self.n_in = n_in  
-        self.weights = MV.rand(n_in)
-        self.bias = 0
-        self.activation = activation
-    
-    fn __init__(inout self, weights:List[SD],bias:SD,activation:ACF = tanh_act):
-        self.n_in = len(weights)
-        self.weights = MV(weights) # n. inputs 
-        self.bias = bias
-        self.activation = activation
-
+       
     @always_inline
     fn __copyinit__(inout self, other: Self):
         self.n_in = other.n_in
-        self.weights = other.weights
-        self.bias = other.bias 
-        self.activation = other.activation
-
+      
     @always_inline
     fn __moveinit__(inout self, owned other: Self):
         self.n_in = other.n_in
-        self.weights = other.weights^
-        self.bias = other.bias 
-        self.activation = other.activation
-       
+        
     fn __call__(self,mx:MM,grad:Bool=False)->MV:
-        if not grad:
-            return self.activation(MN.sum(mx @ self.weights) + self.bias)
+        @parameter
+        if Normalize:
+            if not grad:
+                return tanh_act(MN.sum(mx,axis=0))
+            else:
+                return tanh_act(MN.sum(mx,axis=0), True) 
         else:
-            return self.activation(MN.sum(mx @ self.weights) + self.bias, True) * np.ones(self.n_in)
+            if not grad:
+                return MN.sum(mx,axis=0)
+            else:
+                return MV(mx.cols,1.0)
 
-            
 
-    fn calc_gradients(self, x:MV, dloss_dy:MV) -> MV:
-        return MV()
-        #return self.edge_func.calc_gradients(x,dloss_dy)
-
-    fn update_weights(inout self,dif:MV):
-        pass
-        #self.edge_func.update_weights(dif)
-
-    @staticmethod
-    fn get_list(size:Int,n_in:Int,activation:ACF=relu) -> List[Self]:
-        var res = List[Self](capacity=size)
-        for i in range(size):
-            res.append(Self(n_in,activation))
-        return res
+    #fn calc_gradients(self, x:MV, dloss_dy:MV) -> MV:
+    #    return MV()
+    #    #return self.edge_func.calc_gradients(x,dloss_dy)
+    #
+    #fn update_weights(inout self,dif:MV):
+    #    pass
+    #    #self.edge_func.update_weights(dif)
+    #
+    #@staticmethod
+    #fn get_list(size:Int,n_in:Int,activation:ACF=relu) -> List[Self]:
+    #    var res = List[Self](capacity=size)
+    #    for i in range(size):
+    #        res.append(Self(n_in,activation))
+    #    return res

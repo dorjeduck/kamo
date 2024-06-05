@@ -27,17 +27,17 @@ fn main() raises:
     var name_pred = "BSpline + Silu"
     var name_train = "sin()"
     
+    var batch_size:Int=32
     var learning_rate=0.1
-    var x_bounds = List[SD](0,4*PI)
+    var x_bounds = List[SD](0,4+PI)
 
     # Edge
 
-    var edge = Edge[BSplineSilu[3]](x_bounds,num_trainable_params)
+    var edge = Edge[BSplineSilu[3]](num_trainable_params,x_bounds)
 
     # Training data
-    var x_train = MN.linspace(x_bounds[0], x_bounds[1], 101)
+    var x_train = MN.linspace(x_bounds[0], x_bounds[1],101)
     var y_train = MN.sin(x_train)
-
 
     # Training
     
@@ -60,30 +60,30 @@ fn main() raises:
                         name_pred,
                         "imgs/BSplineSilu-" + int_to_padded_string(step,5,"0") + ".png"
                     )
-         
             
     save_image(0)
 
     var start = now()
-
+    
     for step in range(epochs+1):
+
         #forward pass
         var y_pred = edge(x_train)
-       
+    
         #calculate loss
         var loss = SquaredLoss.loss(y_pred,y_train)
 
         #backward pass
         var dloss_dy = SquaredLoss.dloss_dy(y_pred,y_train)
         var gradients = edge.calc_gradients(x_train,dloss_dy)
-       
+    
         edge.update_weights(-learning_rate * gradients)
 
         if (step+1)%100 == 0:
             print("Epoch: " + str(step+1) + ", loss:" + str(loss))
             
             save_image(step+1)
-    
+        
     var elapased = (now()-start)/1e9
 
     print("Training time:",elapased,"sec")

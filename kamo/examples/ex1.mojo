@@ -18,7 +18,7 @@ fn main() raises:
 
     var num_trainable_params = 11
     
-    var edge = Edge[BSplineSilu[3]](x_bounds,num_trainable_params)
+    var edge = Edge[BSplineSilu[3]](num_trainable_params,x_bounds)
 
     var x = MV(List[SD](1.,2.,10.))
 

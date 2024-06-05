@@ -32,7 +32,7 @@ fn main() raises:
 
     # Edge
 
-    var edge = Edge[ChebyshevPolynomial](x_bounds,num_trainable_params)
+    var edge = Edge[ChebyshevPolynomial](num_trainable_params,x_bounds)
 
     # Training data
     var x_train = MN.linspace(x_bounds[0], x_bounds[1], 101)
