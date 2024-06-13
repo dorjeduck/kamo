@@ -5,47 +5,21 @@ alias SD = Scalar[dtype]
 alias MN = MoNum[dtype, simd_width]
 alias MV = MoVector[dtype, simd_width]
 alias MM = MoMatrix[dtype, simd_width]
+alias SD2 = InlineArray[SD,2]
 
-
+@value
 struct ChebyshevPolynomial(EdgeFunc):
-    var x_bounds: List[SD]
+    var x_bounds: SD2
     var num_trainable_params: Int
-    var weights: MV
     var nodes: MV
 
-    var func_out:MM
-    var tmp_x_size:MV
-
-
-    fn __init__(inout self, num_trainable_params: Int,x_bounds: List[SD]):
+    fn __init__(inout self, num_trainable_params: Int,x_bounds: SD2):
         self.x_bounds = x_bounds
         self.num_trainable_params = num_trainable_params
-
-        self.weights = MV(num_trainable_params, 1)  # MN.rand(num_trainable_params)
         self.nodes = MV(num_trainable_params)
-
-        self.func_out = MM(0,0)
-        self.tmp_x_size = MV(0)
-
+        
         self.set_chebyshev_nodes()
 
-    fn __copyinit__(inout self, existing: Self):
-        self.x_bounds = existing.x_bounds
-        self.num_trainable_params = existing.num_trainable_params
-        self.weights = existing.weights
-        self.nodes = existing.nodes
-
-        self.func_out = existing.func_out
-        self.tmp_x_size = existing.tmp_x_size
-
-    fn __moveinit__(inout self, owned existing: Self):
-        self.x_bounds = existing.x_bounds^
-        self.num_trainable_params = existing.num_trainable_params
-        self.weights = existing.weights^
-        self.nodes = existing.nodes^
-
-        self.func_out = existing.func_out^
-        self.tmp_x_size = existing.tmp_x_size^
 
     fn __del__(owned self):
         pass
@@ -62,28 +36,20 @@ struct ChebyshevPolynomial(EdgeFunc):
         return 2.0 * (x - self.x_bounds[0]) / (self.x_bounds[1] - self.x_bounds[0]) - 1.0
 
 
-    fn update_weights(inout self, dif: MV):
-        
-        self.weights += dif
-
-    fn __call__(inout self, x: MV, grad: Bool = False) -> MV:
-        var res = MV(x.size)
-
-        if self.func_out.cols != x.size:
-            self.func_out = MM(self.weights.size,x.size)
-            self.tmp_x_size = MV(x.size)
-
+   
+    fn calc_phi_mat(inout self,inout phi_mat:MM, x: MV, grad: Bool = False):
+          
         if not grad:
             for i in range(self.num_trainable_params):
-                var c = self.chebyshev_polynomial(x, i)
-                res += self.weights[i] * c
-                self.func_out.insert(c,i*x.size)
+                var c = self.chebyshev_polynomial(x, i)     
+                phi_mat.insert_row(i,c)
         else:
             for i in range(self.num_trainable_params):
-                res += self.weights[i] * self.chebyshev_polynomial_derivative(
+                var c = self.chebyshev_polynomial_derivative(
                     x, i
                 )
-        return res
+                phi_mat.insert_row(i,c)
+       
 
     fn chebyshev_polynomial(self, x: MV, n: Int) -> MV:
         if n == 0:
@@ -130,14 +96,3 @@ struct ChebyshevPolynomial(EdgeFunc):
                 vec_prime_minus_two = vec_prime_minus_one
                 vec_prime_minus_one = res_prime
             return res_prime
-
-    fn calc_gradients(inout self, x:MV, dloss_dy:MV) -> MV:
-        
-        var gradients = MV(self.num_trainable_params)
-        for i in range(self.num_trainable_params):
-            #gradients[i] = MN.sum(dloss_dy * self.chebyshev_polynomial(x, i))/x.size
-
-            self.func_out.get_row(i,self.tmp_x_size)
-            gradients[i] = MN.sum(dloss_dy * self.tmp_x_size)/x.size
-
-        return gradients

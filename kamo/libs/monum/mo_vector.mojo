@@ -1,31 +1,19 @@
 from algorithm import vectorize
-from math import (
-    mul,
-    pow,
-    div,
-    exp,
-    mod,
-    add,
-    sub,
-    trunc,
-    align_down,
-    align_down_residual,
-)
 from random import rand
 from python import Python
 
+from .mo_num import add, sub, mul, div
 
 
-struct MoVector[
-    dtype: DType = DType.float32, simd_width: Int = 2 * simdwidthof[dtype]()
-](Stringable, CollectionElement, Sized):
+struct MoVector[dtype: DType, simd_width: Int](
+    Stringable, CollectionElement, Sized
+):
     var _vec_ptr: DTypePointer[dtype]
     var size: Int
 
     fn __init__(inout self, size: Int):
         self.size = size
         self._vec_ptr = DTypePointer[dtype].alloc(size)
-
         memset_zero[dtype](self._vec_ptr, self.size)
 
     fn __init__(inout self, size: Int, val: Scalar[dtype]):
@@ -33,35 +21,27 @@ struct MoVector[
         self._vec_ptr = DTypePointer[dtype].alloc(size)
 
         @parameter
-        fn splat_val[width: Int](iv: Int) -> None:
-            self._vec_ptr.store[width=width](
-                iv, self._vec_ptr.load[width=width](iv).splat(val)
-            )
+        fn _set_val[width: Int](iv: Int) -> None:
+            self._vec_ptr.store[width=width](iv, val)
 
-        vectorize[splat_val, simd_width](self.size)
-    
-   
+        vectorize[_set_val, simd_width](self.size)
+
     fn __init__(inout self, size: Int, *data: Scalar[dtype]):
-        
         self.size = size
         self._vec_ptr = DTypePointer[dtype].alloc(self.size)
         for i in range(self.size):
             self._vec_ptr[i] = data[i]
 
-   
     fn __init__(inout self, size: Int, ptr: DTypePointer[dtype]):
-        
         self.size = size
-        self._vec_ptr = DTypePointer[dtype].alloc(self.size)
-        for i in range(self.size):
-            self._vec_ptr[i] = ptr[i]
+        self._vec_ptr = ptr
 
-    fn __init__(inout self, owned list: List[Scalar[dtype]]):
+    fn __init__(inout self, list: List[Scalar[dtype]]):
         self.size = len(list)
         self._vec_ptr = DTypePointer[dtype].alloc(self.size)
         for i in range(self.size):
             self._vec_ptr[i] = list[i]
-
+        
     fn __copyinit__(inout self, other: Self):
         self.size = other.size
         self._vec_ptr = DTypePointer[dtype].alloc(self.size)
@@ -75,15 +55,14 @@ struct MoVector[
 
     fn __del__(owned self):
         self._vec_ptr.free()
-        
 
     @always_inline
-    fn __setitem__(inout self, idx:Int, val: Scalar[dtype]):
+    fn __setitem__(inout self, idx: Int, val: Scalar[dtype]):
         self._vec_ptr.store[width=1](idx, val)
 
     @always_inline
     fn __getitem__(self, idx: Int) -> SIMD[dtype, 1]:
-        return self._vec_ptr.load(idx) 
+        return self._vec_ptr.load(idx)
 
     @always_inline
     fn __mul__(self, val: Scalar[dtype]) -> Self:
@@ -111,7 +90,6 @@ struct MoVector[
 
     @always_inline
     fn __iadd__(inout self, other: Self):
-        
         @parameter
         fn tensor_tensor_vectorize[simd_width: Int](idx: Int) -> None:
             self._vec_ptr.store[width=simd_width](
@@ -124,8 +102,8 @@ struct MoVector[
 
     @always_inline
     fn __isub__(inout self, other: Self):
-       return self.__iadd__(-other)
-       
+        return self.__iadd__(-other)
+
     fn __radd__(self, val: Scalar[dtype]) -> Self:
         return self.__add__(val)
 
@@ -136,7 +114,7 @@ struct MoVector[
         return self.__mul__(val)
 
     fn __matmul__(self, vec: Self) -> Scalar[dtype]:
-        return MoNum[dtype,simd_width].sum(self*vec)
+        return MoNum[dtype, simd_width].sum(self * vec)
 
     @always_inline
     fn __truediv__(self, s: Scalar[dtype]) -> Self:
@@ -192,77 +170,88 @@ struct MoVector[
     fn exp(self) -> Self:
         return self._elemwise_exp()
 
-    
-
     @always_inline
     fn __len__(self) -> Int:
         return self.size
 
+    @always_inline
     fn __str__(self) -> String:
         var printStr: String = "["
         for i in range(self.size):
             if i > 0:
                 printStr += ", "
-            printStr += self._vec_ptr[i]
+            printStr += str(self._vec_ptr[i])
         printStr += "]"
         return printStr
 
-    #fn diag(self):
-    #    var result = MoMatrix[dtype](self.size, self.size, 0)
-    
-    fn to_momatrix(inout self,num_rows:Int) -> MoMatrix[dtype]:
-        if self.size/num_rows != self.size//num_rows:
-            print("problem with transform to matrix")
-        var res = MoMatrix[dtype](num_rows,self.size//num_rows,self._vec_ptr)
-        return res
-    
-   
+    @always_inline
+    fn formated_str(self, digits: Int = 2) -> String:
+        var printStr: String = "["
+        for i in range(self.size):
+            if i > 0:
+                printStr += ", "
+            printStr += format_float(self._vec_ptr[i], digits)
+        printStr += "]"
+        return printStr
 
+    @staticmethod
+    fn rand(size: Int) -> MoVector[dtype, simd_width]:
+        var res = MoVector[dtype, simd_width](size)
+        rand(res._vec_ptr, size)
+        return res
 
     @staticmethod
     fn from_numpy(np_array: PythonObject) raises -> Self:
         var np_vec_ptr = DTypePointer[dtype](
-        __mlir_op.`pop.index_to_pointer`[
-            _type = __mlir_type[`!kgen.pointer<scalar<`, dtype.value, `>>`]
-        ](
-            SIMD[DType.index,1](np_array.__array_interface__['data'][0].__index__()).value
+            __mlir_op.`pop.index_to_pointer`[
+                _type = __mlir_type[`!kgen.pointer<scalar<`, dtype.value, `>>`]
+            ](
+                SIMD[DType.index, 1](
+                    np_array.__array_interface__["data"][0].__index__()
+                ).value
+            )
         )
-    )
         var size = int(np_array.shape[0])
-       
-        var _vec_ptr = DTypePointer[dtype].alloc(size)
-        memcpy(_vec_ptr, np_vec_ptr, size)
-        var out = Self(size,_vec_ptr)
-        return out ^
+        var out = MoVector[dtype, simd_width](size)
+
+        memcpy(out._vec_ptr, np_vec_ptr, size)
+
+        return out
 
     fn to_numpy(self) raises -> PythonObject:
         var np = Python.import_module("numpy")
-        var np_vec = np.zeros(self.size)
-        var np_vec_ptr = DTypePointer[dtype](
-        __mlir_op.`pop.index_to_pointer`[
-            _type = __mlir_type[`!kgen.pointer<scalar<`, dtype.value, `>>`]
-        ](
-            SIMD[DType.index,1](np_vec.__array_interface__['data'][0].__index__()).value
-        )
-    )
-        memcpy(np_vec_ptr, self._vec_ptr, len(self))
-        return np_vec ^
+       
+        var type = np.float32
+        if dtype == DType.float64:
+            type = np.float64
+        elif dtype == DType.float16:
+            type = np.float16
 
-    
-        
+        var np_vec = np.zeros(self.size, dtype=type)
+
+        var np_vec_ptr = DTypePointer[dtype](
+            __mlir_op.`pop.index_to_pointer`[
+                _type = __mlir_type[`!kgen.pointer<scalar<`, dtype.value, `>>`]
+            ](
+                SIMD[DType.index, 1](
+                    np_vec.__array_interface__["data"][0].__index__()
+                ).value
+            )
+        )
+        memcpy(np_vec_ptr, self._vec_ptr, len(self))
+        return np_vec^
+
     @always_inline
     fn zero(inout self) -> None:
         memset_zero[dtype](self._vec_ptr, self.size)
-
 
     @always_inline
     fn load[width: Int](self, idx: Int) -> SIMD[dtype, width]:
         return self._vec_ptr.load[width=width](idx)
 
     @always_inline
-    fn store[width: Int](self, idx:Int, val: SIMD[dtype, width]):
+    fn store[width: Int](self, idx: Int, val: SIMD[dtype, width]):
         return self._vec_ptr.store[width=width](idx, val)
-
 
     @always_inline
     fn _elemwise_scalar_math[
@@ -330,7 +319,7 @@ struct MoVector[
         @parameter
         fn exp_vectorize[simd_width: Int](idx: Int) -> None:
             new_vect._vec_ptr.store[width=simd_width](
-                idx, exp(self._vec_ptr.load[width=simd_width](idx))
+                idx, math.exp(self._vec_ptr.load[width=simd_width](idx))
             )
 
         vectorize[exp_vectorize, simd_width](self.size)

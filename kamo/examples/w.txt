@@ -1,1 +1,0 @@
-'Tuple[MoVector[float64, __mul__(4, simdwidthof[stdlib::builtin::dtype::DType,__mlir_type.!kgen.target]())], Int]' to 'MoVector[float64, __mul__(4, simdwidthof[stdlib::builtin::dtype::DType,__mlir_type.!kgen.target]())]'

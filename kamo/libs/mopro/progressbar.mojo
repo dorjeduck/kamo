@@ -90,5 +90,7 @@ fn progress_bar[
     bar_printer.print(0)
     for step in range(total):
         if not callback(step, bar_printer.bar_settings):
+            bar_printer.print(step)
             break
         bar_printer.print(step + 1)
+    print("")

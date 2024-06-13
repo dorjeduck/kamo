@@ -1,26 +1,9 @@
-from kamo import dtype, simd_width
-from kamo.libs.monum import MoVector
+from kamo import MN,MM,MV,SD,SD2
 
-alias SD = Scalar[dtype]
-alias MV = MoVector[dtype, simd_width]
-
-
-trait EdgeFunc:
-    fn __init__(inout self, num_trainable_params: Int,x_bounds: List[SD]):
+trait EdgeFunc(CollectionElement):
+    fn __init__(inout self, num_trainable_params: Int,x_bounds: SD2):
         pass
 
-    fn __call__(inout self, x: MV, grad: Bool = False) -> MV:
+    fn calc_phi_mat(inout self,inout phi_mat:MM, x: MV, grad: Bool = False):
         pass
-
-    fn __copyinit__(inout self, existing: Self):
-        pass
-
-    fn __moveinit__(inout self, owned existing: Self):
-        pass
-
-    fn calc_gradients(inout self, x:MV, dloss_dy:MV) -> MV:
-        pass
-
-    fn update_weights(inout self, dif: MV):
-        pass
-
+    
