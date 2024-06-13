@@ -35,7 +35,7 @@ Performance:
 
 ### 2D regression problem
 
-`train_2d.mojo` implements a 2D regression problem. We compare again the performance of a classical MLP with two KAN networks: one utilizing B-Spline-based edges and the other using Chebyshev polynomial-based edges.
+`train_2d.mojo` implements a 2D regression problem. We compare again the performance of a classical MLP with two KAN networks: B-Spline-based and Chebyshev polynomial-based edges.
 
 <img src="imgs/train_2d.png" width="600"/> 
 

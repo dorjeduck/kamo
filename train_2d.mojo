@@ -156,19 +156,19 @@ fn main() raises:
 
     var im1 = ax1.pcolor(m1.to_numpy(), m2.to_numpy(), ym.to_numpy(), vmin=vmin, vmax=vmax)
     fig.colorbar(im1, ax=ax1)
-    ax1.set_title('Training data')
+    ax1.set_title('Training data',fontsize=20)
     
     var im2 = ax2.pcolor(m1.to_numpy(), m2.to_numpy(), kan1m.to_numpy(), vmin=vmin, vmax=vmax)
     fig.colorbar(im2, ax=ax2)
-    ax2.set_title('KAN B-Spline')
+    ax2.set_title('KAN B-Spline',fontsize=20)
     
     var im3 = ax3.pcolor(m1.to_numpy(), m2.to_numpy(), kan2m.to_numpy(), vmin=vmin, vmax=vmax)
     fig.colorbar(im3, ax=ax3)
-    ax3.set_title('KAN Chebyshev')
+    ax3.set_title('KAN Chebyshev',fontsize=20)
 
     var im4 = ax4.pcolor(m1.to_numpy(), m2.to_numpy(), mlpm.to_numpy(), vmin=vmin, vmax=vmax)
     fig.colorbar(im4, ax=ax4)
-    ax4.set_title('MLP')
+    ax4.set_title('MLP',fontsize=20)
 #
     fig.tight_layout()
 
