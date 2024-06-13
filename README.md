@@ -6,7 +6,8 @@ The following excerpt from the abstract the paper [KAN: Kolmogorov-Arnold Networ
 
 > Inspired by the Kolmogorov-Arnold representation theorem, we propose Kolmogorov- Arnold Networks (KANs) as promising alternatives to Multi-Layer Perceptrons (MLPs). While MLPs have fixed activation functions on nodes (“neurons”), KANs have learnable activation functions on edges (“weights”). KANs have no linear weights at all – every weight parameter is replaced by a univariate function parametrized as a spline. We show that this seemingly simple change makes KANs outperform MLPs in terms of accuracy and interpretability.
 
-This journey into learning about KANs began by porting the KAN Python implementation from [ML without tears](https://mlwithouttears.com/2024/05/15/a-from-scratch-implementation-of-kolmogorov-arnold-networks-kan/) to Mojo. This has proven to be an excellent introduction to the world of KANs. One nice aspect of this clean implementation is its flexibility; it can be instantiated as either a KAN or a classic MLP, allowing for various comparisons and experiments. The focus here is on understanding the fundamental concepts, rather than on performance or implementing all aspects of KANs.
+This repository explores KANs by porting the KAN Python implementation from [ML without tears](https://mlwithouttears.com/2024/05/15/a-from-scratch-implementation-of-kolmogorov-arnold-networks-kan/) to Mojo. This excellent Python implementation provides a flexible foundation, enabling it to be instantiated as either a KAN or a classic MLP, which allows for various comparisons and experiments. The main focus is on understanding the fundamental concepts rather than on optimizing performance or implementing all aspects of KANs.
+
 
 
 ## Empowering edges
