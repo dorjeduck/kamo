@@ -8,11 +8,9 @@ The following excerpt from the abstract the paper [KAN: Kolmogorov-Arnold Networ
 
 I started this journey by porting the KAN Python implementation from [ML without tears](https://mlwithouttears.com/2024/05/15/a-from-scratch-implementation-of-kolmogorov-arnold-networks-kan/) to Mojo. This has been an excellent introduction to the world of KANs for me. One nice aspect of this clean implementation is its flexibility; it can be instantiated as either a KAN or a classic MLP, allowing for various comparisons and experiments. For now, my focus here is on understanding the fundamental concepts, rather than on performance or implementing all aspects of KANs.
 
-
-
 ## Empowering edges
 
-The fundamental innovation of KANs lies in their learnable activation functions on edges. The paper [KAN: Kolmogorov-Arnold Networks](https://arxiv.org/abs/2404.19756) suggests using a linear combination of B-Splines and the SiLU function. Subsequent research also recommends the use of Chebyshev polynomials. These sets of basis functions from approximation theory are not only powerful but also elegant in their mathematical beauty. 
+The fundamental innovation of KANs lies in their learnable activation functions on edges. The paper [KAN: Kolmogorov-Arnold Networks](https://arxiv.org/abs/2404.19756) suggests using a linear combination of B-Splines and the SiLU function. Subsequent research also recommends the use of Chebyshev polynomials. These sets of renowned basis functions from approximation theory are not only powerful but also elegant in their mathematical beauty.
 
 | **B-Spline** | **Chebyshev** |
 |--------------|--------------|
@@ -20,40 +18,39 @@ The fundamental innovation of KANs lies in their learnable activation functions 
 
 ## Usage
 
-The [ML without tears](https://mlwithouttears.com/2024/05/15/a-from-scratch-implementation-of-kolmogorov-arnold-networks-kan/) implementation offers some basic usage examples to get started. We ported the first two of them. 
+The [ML without tears](https://mlwithouttears.com/2024/05/15/a-from-scratch-implementation-of-kolmogorov-arnold-networks-kan/) implementation offers some basic usage examples to get started. We ported the first two of them.
 
 ### 1D regression problem
 
 Refer to [train_1d.mojo](train_1d.mojo) for a simple 1D regression problem. This example compares the performance of a classical MLP with two KAN networks: one utilizing B-Spline-based edges and the other using Chebyshev polynomial-based edges.
 
-<img src="imgs/train_1d.png" width="600"/> 
+<img src="imgs/train_1d.png" width="600"/>
 
 Performance:
 
-<img src="imgs/training_1d_progressbar.png" width="600"/> 
-
+<img src="imgs/training_1d_progressbar.png" width="600"/>
 
 ### 2D regression problem
 
 [train_2d.mojo](train_2d.mojo) implements a 2D regression problem. We compare again the performance of a classical MLP with two KAN networks: B-Spline-based and Chebyshev polynomial-based edges.
 
-<img src="imgs/train_2d.png" width="600"/> 
+<img src="imgs/train_2d.png" width="600"/>
 
 Performance:
 
-<img src="imgs/training_2d_progressbar.png" width="600"/> 
-
+<img src="imgs/training_2d_progressbar.png" width="600"/>
 
 ## Remarks
 
 - The current implementation covers only the basic KAN concepts. The paper [KAN: Kolmogorov-Arnold Networks](https://arxiv.org/abs/2404.19756) suggests various ways to enhance KANs, such as sparsification and grid extension, which have inspired extensive follow-up research. There is plenty of room for improvement in our implementation.
 - Additional basis functions for edges have been proposed, such as Gaussian Radial Basis Functions, as seen in [FastKAN](https://github.com/ZiyaoLi/fast-kan). We plan to add these and other basis functions to this repository.
 - While each edge in a KAN layer has individual weights, the basis functions are evaluated for each edge using the same input values from the previous layer. These values can be effectively cached, resulting in approximately a 50% speedup. We have enabled this caching by default using the `PHI_CACHING` parameter.
+- Neither the Python implementation nor our code are optimized for speed, so we won't be conducting benchmark tests at this stage. However, as a rough estimate, our Mojo implementation is approximately twice as fast as the Python version.
 
-## Resources 
+## Resources
 
 - The GitHub repository associated with the above referenced paper can be found here: [pykan](https://github.com/KindXiaoming/pykan).
-- [Awesome KAN](https://github.com/mintisan/awesome-kan) A curated list of awesome libraries, projects, tutorials, papers, and other resources related to Kolmogorov-Arnold Network (KAN). 
+- [Awesome KAN](https://github.com/mintisan/awesome-kan) A curated list of awesome libraries, projects, tutorials, papers, and other resources related to Kolmogorov-Arnold Network (KAN).
 
 ## Changelog
   
