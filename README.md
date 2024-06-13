@@ -10,13 +10,15 @@ This repository explores KANs by porting the KAN Python implementation from [ML 
 
 ## Empowering edges
 
-The fundamental innovation of KANs lies in their learnable activation functions on edges. The paper [KAN: Kolmogorov-Arnold Networks](https://arxiv.org/abs/2404.19756) suggests using a linear combination of B-Splines and the SiLU function. Subsequent research also recommends the use of Chebyshev polynomials. These sets of renowned basis functions from approximation theory are not only powerful but also elegant in their mathematical beauty.
+The fundamental innovation of KANs lies in their learnable activation functions on edges. The paper [KAN: Kolmogorov-Arnold Networks](https://arxiv.org/abs/2404.19756) suggests using a linear combination of B-Splines and the SiLU function. Subsequent research also recommends the use of Chebyshev polynomials among others. These sets of renowned basis functions from approximation theory are not only powerful but also elegant in their mathematical beauty.
 
 | **B-Spline** | **Chebyshev** |
 |--------------|--------------|
 | <img src="imgs/bspline_silu_basis.png" width="300"/> | <img src="imgs/chebyshev_basis.png" width="300"/> |
 
 ## Usage
+
+**Prerequisite**: Ensure you have [Mojo](https://docs.modular.com/mojo/) 24.4 installed.
 
 The [ML without tears](https://mlwithouttears.com/2024/05/15/a-from-scratch-implementation-of-kolmogorov-arnold-networks-kan/) implementation offers some basic usage examples to get started. We ported the first two of them.
 
