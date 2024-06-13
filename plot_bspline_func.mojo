@@ -39,7 +39,7 @@ fn main() raises:
 
     for i in range(NUM_TRAINABLE_EDGE_PARAMS):
         ax.plot(x_plot_numpy, phi.get_row(i).to_numpy(), color=colors[i%8])
-    ax.set_title("Cubic BSpline & Silu basis functions",fontsize=24)
+    ax.set_title("Cubic B-Spline & SILU basis functions",fontsize=24)
     ax.grid()
     fig.tight_layout()
 

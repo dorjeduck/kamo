@@ -160,7 +160,7 @@ fn main() raises:
     
     var im2 = ax2.pcolor(m1.to_numpy(), m2.to_numpy(), kan1m.to_numpy(), vmin=vmin, vmax=vmax)
     fig.colorbar(im2, ax=ax2)
-    ax2.set_title('KAN BSpline')
+    ax2.set_title('KAN B-Spline')
     
     var im3 = ax3.pcolor(m1.to_numpy(), m2.to_numpy(), kan2m.to_numpy(), vmin=vmin, vmax=vmax)
     fig.colorbar(im3, ax=ax3)

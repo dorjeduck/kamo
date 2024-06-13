@@ -121,7 +121,7 @@ fn main() raises:
     
     ax.plot(x_train.get_col(0).to_numpy(), y_train.get_col(0).to_numpy(), 'o', color="blue", label='Training Dataset')
     
-    ax.plot(x_numpy, y_plot_kan1.to_numpy(), color='orange', label='KAN BSpline')
+    ax.plot(x_numpy, y_plot_kan1.to_numpy(), color='orange', label='KAN B-Spline')
     ax.plot(x_numpy, y_plot_kan2.to_numpy(), color='red', label='KAN Chebyshev')
     ax.plot(x_numpy, y_plot_mlp.to_numpy(), color='green', label='MLP')
    
