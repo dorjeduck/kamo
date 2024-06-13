@@ -49,7 +49,7 @@ Performance:
 - While each edge in a KAN layer has individual weights, the basis functions are evaluated for each edge using the same input values from the previous layer. These function values can be effectively cached, resulting in approximately a 50% speedup. We have enabled this caching by default using the `PHI_CACHING` parameter.
 - For simplicity, we use `tanh` to normalize the edge inputs to the range of spline grids. This technique is widely used by other performance-optimized KAN implementations (see, for example, [FasterKAN](https://github.com/AthanasiosDelis/faster-kan)).
 - Mojo is evolving quickly but is still quite young and limited in some areas, such as full support for dynamic polymorphism. Some of the boilerplate in our code is due to these limitations. We're looking forward to improve our implementation as Mojo continues to mature.
-- Neither the Python implementation nor our code are particular optimized for speed, so we won't be conducting benchmark tests at this stage. However, as a rough estimate, our Mojo implementation is approximately twice as fast as the Python version on our machine.
+- Neither the Python implementation nor our code are particularly optimized for speed, so we won't be conducting benchmark tests at this stage. However, our Mojo implementation appears to be roughly twice as fast as the Python version on our machine based on initial observations.
 
 ## Resources
 
