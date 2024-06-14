@@ -63,7 +63,7 @@ Performance:
 ## Changelog
   
 - 2024.06.14
-- Added Gaussian Radial Basis Functions (inspired by [FastKAN](https://github.com/ZiyaoLi/fast-kan))
+  - Added Gaussian Radial Basis Functions (inspired by [FastKAN](https://github.com/ZiyaoLi/fast-kan))
 - 2024.06.13
   - Initial commit version 2
 
