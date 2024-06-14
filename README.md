@@ -6,7 +6,7 @@ The following excerpt from the abstract of the paper [KAN: Kolmogorov-Arnold Net
 
 > Inspired by the Kolmogorov-Arnold representation theorem, we propose Kolmogorov- Arnold Networks (KANs) as promising alternatives to Multi-Layer Perceptrons (MLPs). While MLPs have fixed activation functions on nodes (“neurons”), KANs have learnable activation functions on edges (“weights”). KANs have no linear weights at all – every weight parameter is replaced by a univariate function parametrized as a spline. We show that this seemingly simple change makes KANs outperform MLPs in terms of accuracy and interpretability.
 
-This repository explores KANs by porting the KAN Python implementation from [ML without tears](https://mlwithouttears.com/2024/05/15/a-from-scratch-implementation-of-kolmogorov-arnold-networks-kan/) to Mojo. This very readable Python implementation provides a flexible foundation, enabling instantiation as either a KAN or a classic MLP, which allows for various comparisons and experiments. The main focus is on understanding the fundamental concepts rather than on optimizing performance or implementing all aspects of KANs.
+This repository explores KANs by porting the KAN Python implementation from [ML without tears](https://mlwithouttears.com/2024/05/15/a-from-scratch-implementation-of-kolmogorov-arnold-networks-kan/) to Mojo. This very readable Python implementation provides a flexible foundation, enabling instantiation as either a KAN or a classic MLP, which allows for various comparisons and experiments. The main focus is on understanding the core concepts rather than on optimizing performance or implementing all aspects of KANs.
 
 ## Empowering edges
 
@@ -52,7 +52,7 @@ Performance:
 - The current implementation covers only the basic KAN concepts. The paper [KAN: Kolmogorov-Arnold Networks](https://arxiv.org/abs/2404.19756) suggests various ways to enhance KANs, such as sparsification and grid extension, and has inspired extensive follow-up research. There is plenty of room for improvement in our implementation.
 - While each edge in a KAN layer has individual weights, the basis functions are evaluated for each edge using the same input values from the previous layer. These function values can be effectively cached, resulting in significant speedups depending on the network structure. We have enabled this caching by default (`PHI_CACHING` parameter).
 - For simplicity, we use `tanh` to normalize the edge inputs to the range of spline grids. This technique is widely used by other performance-optimized KAN implementations (see, for example, [FasterKAN](https://github.com/AthanasiosDelis/faster-kan)).
-- Mojo is evolving quickly but is still quite young and limited in some areas, such as full support for dynamic polymorphism. Some of the boilerplate in our code is due to these limitations. We're looking forward to improve our implementation as Mojo continues to mature.
+- Mojo is evolving quickly but is still quite young and limited in some aspects, such as full support for dynamic polymorphism. Some of the boilerplate in our code is due to these limitations. We're looking forward to improve our implementation as Mojo continues to mature.
 - Neither the Python implementation nor our code are particularly optimized for speed, so we won't be conducting benchmark tests at this stage. However, our Mojo implementation appears to be roughly twice as fast as the Python version on our machine based on initial observations.
 
 ## Resources
