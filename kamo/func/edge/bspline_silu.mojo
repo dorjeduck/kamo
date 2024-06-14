@@ -11,7 +11,7 @@ struct BSplineSilu[SPLINE_DEGREE: Int = 3, ADD_SILU: Bool = True](EdgeFunc):
     var num_trainable_params: Int
     var knots: MV
 
-    fn __init__(inout self, num_trainable_params: Int, x_bounds: SD2):
+    fn __init__(inout self, num_trainable_params: Int, x_bounds: SD2=SD2(-1,1)):
         self.x_bounds = x_bounds
         self.num_trainable_params = num_trainable_params
         var start = 1 if ADD_SILU else 0

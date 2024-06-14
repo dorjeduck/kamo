@@ -13,7 +13,7 @@ struct ChebyshevPolynomial(EdgeFunc):
     var num_trainable_params: Int
     var nodes: MV
 
-    fn __init__(inout self, num_trainable_params: Int,x_bounds: SD2):
+    fn __init__(inout self, num_trainable_params: Int,x_bounds: SD2=SD2(-1,1)):
         self.x_bounds = x_bounds
         self.num_trainable_params = num_trainable_params
         self.nodes = MV(num_trainable_params)

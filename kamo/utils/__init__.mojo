@@ -1,2 +1,2 @@
-from .plot_manager import PlotManager
+from .basis_function_plotter import BasisFunctionPlotter
 from .str import int_to_padded_string,str_maxlen

@@ -13,7 +13,7 @@ alias SD2 = InlineArray[SD,2]
 struct Identity(EdgeFunc):
     var num_trainable_params: Int
     
-    fn __init__(inout self, num_trainable_params: Int,x_bounds: SD2):
+    fn __init__(inout self, num_trainable_params: Int,x_bounds: SD2=SD2(-1,1)):
         self.num_trainable_params = num_trainable_params
        
     fn __del__(owned self):
