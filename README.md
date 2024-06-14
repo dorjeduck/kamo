@@ -15,9 +15,9 @@ The fundamental innovation of KANs lies in their learnable activation functions 
 | **Basis Function** | **Derivative** |
 |--------------------|----------------|
 | **B-Spline**       |                |
-| <img src="imgs/bspline_silu_basis.png" width="300"/> | <img src="imgs/bspline_silu_der.png" width="300"/> |
+| <img src="imgs/bspline_silu_basis.png" width="300"/> | <img src="imgs/bspline_silu_basis_der.png" width="300"/> |
 | **Chebyshev**      |                |
-| <img src="imgs/chebyshev_basis.png" width="300"/> | <img src="imgs/chebyshev_der.png" width="300"/> |
+| <img src="imgs/chebyshev_basis.png" width="300"/> | <img src="imgs/chebyshev_basis_der.png" width="300"/> |
 | **Gaussian RBF**   |                |
 | <img src="imgs/gaussian_rbf.png" width="300"/> | <img src="imgs/gaussian_rbf_der.png" width="300"/> |
 
