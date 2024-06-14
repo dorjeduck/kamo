@@ -199,7 +199,7 @@ fn main() raises:
 
     var im4 = ax4.pcolor(m1.to_numpy(), m2.to_numpy(), kan3m.to_numpy(), vmin=vmin, vmax=vmax)
     fig.colorbar(im4, ax=ax4)
-    ax4.set_title('Gaussian',fontsize=20)
+    ax4.set_title('KAN Gaussian RBF',fontsize=20)
 
     var im5 = ax5.pcolor(m1.to_numpy(), m2.to_numpy(), mlpm.to_numpy(), vmin=vmin, vmax=vmax)
     fig.colorbar(im5, ax=ax5)
