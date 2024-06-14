@@ -10,13 +10,13 @@ This repository explores KANs by porting the KAN Python implementation from [ML 
 
 ## Empowering edges
 
-The fundamental innovation of KANs lies in their learnable activation functions on edges. The paper [KAN: Kolmogorov-Arnold Networks](https://arxiv.org/abs/2404.19756) suggests using a linear combination of B-Splines and the SiLU function. Subsequent research also recommends the use of Chebyshev polynomials among others. One key feature of these functions is that their derivatives are well defined and easy to calculate, which is crucial for gradient descent optimization. 
+The fundamental innovation of KANs lies in their learnable activation functions on edges. The paper [KAN: Kolmogorov-Arnold Networks](https://arxiv.org/abs/2404.19756) suggests using a linear combination of B-Splines and the SiLU function. Subsequent research also recommends the use of Chebyshev polynomials among others. One key feature of these functions is that their derivatives are well defined and easy to calculate, which is crucial for gradient descent optimization.
 
 | **Basis Functions** | **Derivatives** |
 |--------------------|----------------|
-| **B-Spline**       |                |
+| **B-Splines & SILU**       |                |
 | <img src="imgs/bspline_silu_basis.png" width="300"/> | <img src="imgs/bspline_silu_basis_der.png" width="300"/> |
-| **Chebyshev**      |                |
+| **Chebyshev Polynominals**      |                |
 | <img src="imgs/chebyshev_basis.png" width="300"/> | <img src="imgs/chebyshev_basis_der.png" width="300"/> |
 | **Gaussian RBF**   |                |
 | <img src="imgs/gaussian_rbf.png" width="300"/> | <img src="imgs/gaussian_rbf_der.png" width="300"/> |
@@ -29,7 +29,7 @@ The [ML without tears](https://mlwithouttears.com/2024/05/15/a-from-scratch-impl
 
 ### 1D regression problem
 
-Refer to [train_1d.mojo](train_1d.mojo) for a simple 1D regression problem. This example compares the performance of a classical MLP with two KAN networks: one utilizing B-Spline-based edges and the other using Chebyshev polynomial-based edges.
+Refer to [train_1d.mojo](train_1d.mojo) for a simple 1D regression problem. This example compares the performance of a classical MLP with three KAN networks: one utilizing B-Spline-based edges, another using Chebyshev polynomial-based edges, and the third employing Gaussian RBF-based edges.
 
 <img src="imgs/train_1d.png" width="600"/>
 
@@ -39,7 +39,7 @@ Performance:
 
 ### 2D regression problem
 
-[train_2d.mojo](train_2d.mojo) implements a 2D regression problem. We compare again the performance of a classical MLP with two KAN networks: B-Spline-based and Chebyshev polynomial-based edges.
+[train_2d.mojo](train_2d.mojo) implements a 2D regression problem. We compare again the performance of a classical MLP with three KAN networks: B-Spline-based, Chebyshev polynomial-based, and Gaussian RBF-based edges
 
 <img src="imgs/train_2d.png" width="600"/>
 
