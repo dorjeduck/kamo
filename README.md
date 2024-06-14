@@ -12,9 +12,9 @@ This repository explores KANs by porting the KAN Python implementation from [ML 
 
 The fundamental innovation of KANs lies in their learnable activation functions on edges. The paper [KAN: Kolmogorov-Arnold Networks](https://arxiv.org/abs/2404.19756) suggests using a linear combination of B-Splines and the SiLU function. Subsequent research also recommends the use of Chebyshev polynomials among others. These sets of renowned basis functions from approximation theory are not only powerful but also elegant in their mathematical beauty.
 
-| **B-Spline** | **Chebyshev** |
 |--------------|--------------|
 | <img src="imgs/bspline_silu_basis.png" width="300"/> | <img src="imgs/chebyshev_basis.png" width="300"/> |
+| <img src="imgs/gaussian_rbf.png" width="300"/> |  |
 
 ## Usage
 
