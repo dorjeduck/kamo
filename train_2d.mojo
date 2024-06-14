@@ -60,8 +60,7 @@ fn main() raises:
     var kan1 = FeedForward
         [
             NeuronKAN[BSplineSilu[3],
-            X_BOUNDS
-        ],
+            X_BOUNDS],
             SquaredLoss,
             PHI_CACHING
         ]
@@ -84,8 +83,7 @@ fn main() raises:
     var kan2 = FeedForward
         [
             NeuronKAN[ChebyshevPolynomial,
-            X_BOUNDS
-        ],
+            X_BOUNDS],
             SquaredLoss,
             PHI_CACHING
         ]
@@ -107,8 +105,7 @@ fn main() raises:
     var kan3 = FeedForward
         [
             NeuronKAN[GaussianRBF,
-            X_BOUNDS
-        ],
+            X_BOUNDS],
             SquaredLoss,
             PHI_CACHING
         ]
