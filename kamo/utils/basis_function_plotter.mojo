@@ -35,7 +35,7 @@ struct BasisFunctionPlotter:
 
         self.plt = Python.import_module("matplotlib.pyplot")
 
-    fn plot[EF:EdgeFunc](inout self, inout func: EF, title: String, path: String) raises:
+    fn plot[EF:EdgeFunc](inout self, inout func: EF, title: String, path: String,derivative:Bool=False) raises:
         ## plot
 
         var x_plot = MN.linspace(
@@ -43,7 +43,7 @@ struct BasisFunctionPlotter:
         )
 
         var phi = MM(self.num_func, self.num_plot_data)
-        func.calc_phi_mat(phi, x_plot)
+        func.calc_phi_mat(phi, x_plot,derivative)
 
         var fig = self.plt.figure(figsize=(12, 8))
         var ax = fig.add_subplot(111)

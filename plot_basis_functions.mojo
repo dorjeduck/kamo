@@ -18,7 +18,10 @@ fn main() raises:
     var bfp = BasisFunctionPlotter(num_func,num_plot_data)
     
     bfp.plot[BSplineSilu[3]](spline,"Cubic B-Spline & SILU basis functions","imgs/bspline_silu_basis.png")
+    bfp.plot[BSplineSilu[3]](spline,"Derivatives of the Cubic B-Spline & SILU basis functions","imgs/bspline_silu_basis_der.png",True)
     bfp.plot[ChebyshevPolynomial](chebyshev,"Chebyshev Polynomials basis functions","imgs/chebyshev_basis.png")
+    bfp.plot[ChebyshevPolynomial](chebyshev,"Derivatives of the Chebyshev Polynomials basis functions","imgs/chebyshev_basis_der.png",True)
     bfp.plot[GaussianRBF](gauss,"Gaussian radial basis functions","imgs/gaussian_rbf.png")
+    bfp.plot[GaussianRBF](gauss,"Derivatives of the Gaussian radial basis functions","imgs/gaussian_rbf_der.png",True)
     
     
