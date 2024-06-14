@@ -16,7 +16,7 @@ The fundamental innovation of KANs lies in their learnable activation functions 
 |--------------|---------------|
 | <img src="imgs/bspline_silu_basis.png" width="300"/> | <img src="imgs/chebyshev_basis.png" width="300"/> |
 | **Gaussian RBF** | |
-| <img src="imgs/gaussian_rbf_basis.png" width="300"/> | |
+| <img src="imgs/gaussian_rbf.png" width="300"/> | |
 
 
 ## Usage
