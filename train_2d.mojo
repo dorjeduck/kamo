@@ -5,17 +5,18 @@ from sys.terminate import exit
 from kamo import MN,MM,MV,SD,SD2
 from kamo.feed_forward_network import FeedForward
 from kamo.func import relu
-from kamo.func.edge import BSplineSilu,ChebyshevPolynomial
+from kamo.func.edge import BSplineSilu,ChebyshevPolynomial,GaussianRBF
 from kamo.func.loss import SquaredLoss
 from kamo.neuron import NeuronType,NeuronKAN,NeuronNN
 
 fn main() raises:
 
-    alias SEED = 17
+    alias SEED = 109
 
     # KAN compile time settings
     alias NUM_TRAINABLE_EDGE_PARAMS_BSPLINE = 7
     alias NUM_TRAINABLE_EDGE_PARAMS_CHEBYSHEV = 3
+    alias NUM_TRAINABLE_EDGE_PARAMS_GAUSSIAN= 4
     alias X_BOUNDS = SD2(-1,1)
     alias PHI_CACHING = True
    
@@ -28,6 +29,7 @@ fn main() raises:
     var loss_tolerance = 0.05
     var learning_rate_kan_bspline = 0.01
     var learning_rate_kan_cheby = 0.005
+    var learning_rate_kan_gaussian = 0.0075
     var learning_rate_nn = 0.005
     
     # Training data
@@ -100,6 +102,30 @@ fn main() raises:
               n_iter_max=n_iter_train, 
               loss_tolerance=loss_tolerance)
 
+    print("\nKAN training (Gaussian RBF edges)")
+
+    var kan3 = FeedForward
+        [
+            NeuronKAN[GaussianRBF,
+            X_BOUNDS
+        ],
+            SquaredLoss,
+            PHI_CACHING
+        ]
+        (
+            List[Int](2,2, 1),
+            num_trainable_edge_params=NUM_TRAINABLE_EDGE_PARAMS_GAUSSIAN,
+            learning_rate=learning_rate_kan_gaussian,
+            weights_range=SD2(-.1, .1),
+            seed_val=SEED
+        )
+                       
+    kan3.train(x_train, 
+              y_train, 
+              n_iter_max=n_iter_train, 
+              loss_tolerance=loss_tolerance)
+
+
 
     # MLP 2D
     
@@ -133,6 +159,7 @@ fn main() raises:
     var ym = MM(x2.size,x1.size)
     var kan1m = MM(x2.size,x1.size)
     var kan2m = MM(x2.size,x1.size)
+    var kan3m = MM(x2.size,x1.size)
     var mlpm = MM(x2.size,x1.size)
     
     for i in range(m1.rows):
@@ -140,15 +167,19 @@ fn main() raises:
             ym[i,j] = y_train[i*m1.cols+j]
             kan1m[i,j] = kan1(MV(2,m1[i,j],m2[i,j]))[0]
             kan2m[i,j] = kan2(MV(2,m1[i,j],m2[i,j]))[0]
+            kan3m[i,j] = kan3(MV(2,m1[i,j],m2[i,j]))[0]
             mlpm[i,j] = mlp(MV(2,m1[i,j],m2[i,j]))[0]
 
     var plt = Python.import_module("matplotlib.pyplot")
 
     var fig = plt.figure(figsize=(14,9))
-    var ax1 = fig.add_subplot(221)
-    var ax4 = fig.add_subplot(222)
-    var ax2 = fig.add_subplot(223)
-    var ax3 = fig.add_subplot(224)
+
+    var ax1 = fig.add_subplot(321)  # First row, middle column
+    var ax2 = fig.add_subplot(323)  # Second row, first column
+    var ax3 = fig.add_subplot(324)  # Second row, second column
+    var ax4 = fig.add_subplot(325)  # Third row, first column
+    var ax5 = fig.add_subplot(326)  # Third row, second column
+
     
     var vmin:SD 
     var vmax:SD
@@ -166,9 +197,13 @@ fn main() raises:
     fig.colorbar(im3, ax=ax3)
     ax3.set_title('KAN Chebyshev',fontsize=20)
 
-    var im4 = ax4.pcolor(m1.to_numpy(), m2.to_numpy(), mlpm.to_numpy(), vmin=vmin, vmax=vmax)
+    var im4 = ax4.pcolor(m1.to_numpy(), m2.to_numpy(), kan3m.to_numpy(), vmin=vmin, vmax=vmax)
     fig.colorbar(im4, ax=ax4)
-    ax4.set_title('MLP',fontsize=20)
+    ax4.set_title('Gaussian',fontsize=20)
+
+    var im5 = ax5.pcolor(m1.to_numpy(), m2.to_numpy(), mlpm.to_numpy(), vmin=vmin, vmax=vmax)
+    fig.colorbar(im5, ax=ax5)
+    ax5.set_title('MLP',fontsize=20)
 #
     fig.tight_layout()
 

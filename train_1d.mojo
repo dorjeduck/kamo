@@ -4,7 +4,7 @@ from kamo import MN,MM,MV,SD,SD2
 from kamo.feed_forward_network import FeedForward
 from kamo.func import relu
 from kamo.func.loss import SquaredLoss
-from kamo.func.edge import BSplineSilu,ChebyshevPolynomial
+from kamo.func.edge import BSplineSilu,ChebyshevPolynomial,GaussianRBF
 from kamo.neuron import NeuronType,NeuronKAN,NeuronNN
 
 fn main() raises:
@@ -15,6 +15,7 @@ fn main() raises:
     # KAN compile time settings
     alias NUM_TRAINABLE_EDGE_PARAMS_BSPLINE = 7
     alias NUM_TRAINABLE_EDGE_PARAMS_CHEBYSHEV = 3
+    alias NUM_TRAINABLE_EDGE_PARAMS_GAUSSIAN = 4
     alias X_BOUNDS = SD2(-1,1)
     alias PHI_CACHING = True
    
@@ -55,7 +56,6 @@ fn main() raises:
               n_iter_max=n_max_iter_train, 
               loss_tolerance=loss_tolerance)
 
-    # KAN 1D
 
     print("\nKAN training (Chebyshev Polynominal edges)")
 
@@ -79,6 +79,29 @@ fn main() raises:
               loss_tolerance=loss_tolerance)
 
     
+    print("\nKAN training (Gaussian RBF edges)")
+
+    var kan3 = FeedForward
+        [
+            NeuronKAN[GaussianRBF,X_BOUNDS],
+            SquaredLoss,
+            PHI_CACHING
+        ]
+        (
+            List[Int](1,2,2,1),
+            num_trainable_edge_params=NUM_TRAINABLE_EDGE_PARAMS_GAUSSIAN,
+            learning_rate=learning_rate_kan,
+            weights_range=SD2(-1, 1),
+            seed_val=SEED
+        )
+             
+    kan3.train(x_train, 
+              y_train, 
+              n_iter_max=n_max_iter_train, 
+              loss_tolerance=loss_tolerance)
+
+    
+
     # MLP 1D
     
     print("\nMLP training")
@@ -110,6 +133,8 @@ fn main() raises:
     
     var y_plot_kan1 = kan1(x_plot).get_col(0)
     var y_plot_kan2 = kan2(x_plot).get_col(0)
+    var y_plot_kan3 = kan3(x_plot).get_col(0)
+    
     var y_plot_mlp = mlp(x_plot).get_col(0)
 
     var plt = Python.import_module("matplotlib.pyplot")
@@ -123,6 +148,7 @@ fn main() raises:
     
     ax.plot(x_numpy, y_plot_kan1.to_numpy(), color='orange', label='KAN B-Spline')
     ax.plot(x_numpy, y_plot_kan2.to_numpy(), color='red', label='KAN Chebyshev')
+    ax.plot(x_numpy, y_plot_kan3.to_numpy(), color='purple', label='KAN Gaussian RBF')
     ax.plot(x_numpy, y_plot_mlp.to_numpy(), color='green', label='MLP')
    
     #ax.set_xlabel('input feature', fontsize=13)

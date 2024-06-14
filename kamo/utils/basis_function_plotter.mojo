@@ -3,7 +3,6 @@ from python import Python
 from kamo import MN, MM, SD2
 from kamo.func.edge import EdgeFunc
 
-
 struct BasisFunctionPlotter:
     var num_plot_data: Int
     var x_bounds: SD2

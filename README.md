@@ -12,7 +12,7 @@ This repository explores KANs by porting the KAN Python implementation from [ML 
 
 The fundamental innovation of KANs lies in their learnable activation functions on edges. The paper [KAN: Kolmogorov-Arnold Networks](https://arxiv.org/abs/2404.19756) suggests using a linear combination of B-Splines and the SiLU function. Subsequent research also recommends the use of Chebyshev polynomials among others. One key feature of these functions is that their derivatives are easy to calculate, which is crucial for gradient descent optimization. 
 
-| **Basis Function** | **Derivative** |
+| **Basis Functions** | **Derivatives** |
 |--------------------|----------------|
 | **B-Spline**       |                |
 | <img src="imgs/bspline_silu_basis.png" width="300"/> | <img src="imgs/bspline_silu_basis_der.png" width="300"/> |
@@ -50,7 +50,6 @@ Performance:
 ## Remarks
 
 - The current implementation covers only the basic KAN concepts. The paper [KAN: Kolmogorov-Arnold Networks](https://arxiv.org/abs/2404.19756) suggests various ways to enhance KANs, such as sparsification and grid extension, and has inspired extensive follow-up research. There is plenty of room for improvement in our implementation.
-- Additional basis functions for edges have been proposed, such as Gaussian Radial Basis Functions, as seen in [FastKAN](https://github.com/ZiyaoLi/fast-kan). We plan to add these and other basis functions to this repository.
 - While each edge in a KAN layer has individual weights, the basis functions are evaluated for each edge using the same input values from the previous layer. These function values can be effectively cached, resulting in approximately a 50% speedup. We have enabled this caching by default (`PHI_CACHING` parameter).
 - For simplicity, we use `tanh` to normalize the edge inputs to the range of spline grids. This technique is widely used by other performance-optimized KAN implementations (see, for example, [FasterKAN](https://github.com/AthanasiosDelis/faster-kan)).
 - Mojo is evolving quickly but is still quite young and limited in some areas, such as full support for dynamic polymorphism. Some of the boilerplate in our code is due to these limitations. We're looking forward to improve our implementation as Mojo continues to mature.
@@ -63,6 +62,8 @@ Performance:
 
 ## Changelog
   
+- 2024.06.14
+- Added Gaussian Radial Basis Functions (inspired by [FastKAN](https://github.com/ZiyaoLi/fast-kan))
 - 2024.06.13
   - Initial commit version 2
 
