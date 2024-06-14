@@ -10,7 +10,7 @@ This repository explores KANs by porting the KAN Python implementation from [ML 
 
 ## Empowering edges
 
-The fundamental innovation of KANs lies in their learnable activation functions on edges. The paper [KAN: Kolmogorov-Arnold Networks](https://arxiv.org/abs/2404.19756) suggests using a linear combination of B-Splines and the SiLU function. Subsequent research also recommends the use of Chebyshev polynomials among others. One key feature of these functions is that their derivatives are easy to calculate, which is crucial for gradient descent optimization. 
+The fundamental innovation of KANs lies in their learnable activation functions on edges. The paper [KAN: Kolmogorov-Arnold Networks](https://arxiv.org/abs/2404.19756) suggests using a linear combination of B-Splines and the SiLU function. Subsequent research also recommends the use of Chebyshev polynomials among others. One key feature of these functions is that their derivatives are well defined and easy to calculate, which is crucial for gradient descent optimization. 
 
 | **Basis Functions** | **Derivatives** |
 |--------------------|----------------|
