@@ -47,10 +47,13 @@ Performance:
 
 <img src="imgs/training_2d_progressbar.png" width="600"/>
 
+## Just Learning
+
+Currently, this project is for our own educational purposes, with no immediate plans to make it suitable for real-world applications. Similar to the original Python code, this KAN implementation prioritizes network transparency over speed. If you're looking for a Mojo deep learning framework with competitive performance features, check out [Basalt](https://github.com/basalt-org/basalt).
+
 ## Remarks
 
 - The current implementation covers only the basic KAN concepts. The paper [KAN: Kolmogorov-Arnold Networks](https://arxiv.org/abs/2404.19756) suggests various ways to enhance KANs, such as sparsification and grid extension, and has inspired extensive follow-up research. There is plenty of room for improvement in our implementation.
-- While each edge in a KAN layer has individual weights, the basis functions are evaluated for each edge using the same input values from the previous layer. These function values can be effectively cached, resulting in significant speedups depending on the network structure. We have enabled this caching by default (`PHI_CACHING` parameter).
 - For simplicity, we use `tanh` to normalize the edge inputs to the range of spline grids. This technique is widely used by other performance-optimized KAN implementations (see, for example, [FasterKAN](https://github.com/AthanasiosDelis/faster-kan)).
 - Mojo is evolving quickly but is still quite young and limited in some aspects, such as full support for dynamic polymorphism. Some of the boilerplate in our code is due to these limitations. We're looking forward to improve our implementation as Mojo continues to mature.
 - Neither the Python implementation nor our code are particularly optimized for speed, so we won't be conducting benchmark tests at this stage. However, our Mojo implementation appears to be roughly twice as fast as the Python version on our machine based on initial observations.
