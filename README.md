@@ -56,7 +56,7 @@ Currently, this project is for our own educational purposes, with no immediate p
 - The current implementation covers only the basic KAN concepts. The paper [KAN: Kolmogorov-Arnold Networks](https://arxiv.org/abs/2404.19756) suggests various ways to enhance KANs, such as sparsification and grid extension, and has inspired extensive follow-up research. There is plenty of room for improvement in our implementation.
 - For simplicity, we use `tanh` to normalize the edge inputs to the range of spline grids. This technique is widely used by other performance-optimized KAN implementations (see, for example, [FasterKAN](https://github.com/AthanasiosDelis/faster-kan)).
 - Mojo is evolving quickly but is still quite young and limited in some aspects, such as full support for dynamic polymorphism. Some of the boilerplate in our code is due to these limitations. We're looking forward to improve our implementation as Mojo continues to mature.
-- Neither the Python implementation nor our code are particularly optimized for speed, so we won't be conducting benchmark tests at this stage. However, our Mojo implementation appears to be roughly twice as fast as the Python version on our machine based on initial observations.
+
 
 ## Resources
 
