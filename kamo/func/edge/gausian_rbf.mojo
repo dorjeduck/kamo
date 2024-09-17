@@ -24,7 +24,6 @@ struct GaussianRBF(EdgeFunc):
 
     fn calc_phi_mat(inout self, inout phi_mat: MM, xx: MV, grad: Bool = False):
         var x = self.scale_to_unit(xx)
-
         if not grad:
             for i in range(self.num_trainable_params):
                 var b = self.basis_function(i, x)

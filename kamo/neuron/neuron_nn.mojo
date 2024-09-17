@@ -68,18 +68,19 @@ struct NeuronNN[ACTIVATION_FUNC:ACF = relu](NeuronType):
 
     ## common to all neuron types
 
-    fn __call__(inout self, x: MV) -> SD:
+    fn __call__(inout self, x: MV,inout phi_mat:MM,inout phi_der_mat:MM) -> SD:
+
         MN.inplace_copy(self.xin,x)
 
         # forward pass: compute neuron's output
-        self.calc_xmid()
+        self.calc_xmid(phi_mat)
         self.calc_xout()
 
         # compute internal derivatives
         self.calc_dxout_dxmid()
         self.calc_dxout_dbias()
-        self.calc_dxmid_dw()
-        self.calc_dxmid_dxin()
+        self.calc_dxmid_dw(phi_mat)
+        self.calc_dxmid_dxin(phi_der_mat)
 
         # compute external derivativesdxout_dxin
         self.calc_dxout_dxin()
@@ -113,8 +114,8 @@ struct NeuronNN[ACTIVATION_FUNC:ACF = relu](NeuronType):
 
     ## nn specific
 
-    fn calc_xmid(inout self):
-         MN.inplace_copy(self.xmid,self.weights.get_col(0) * self.xin)
+    fn calc_xmid(inout self,inout phi_mat:MM):
+        MN.inplace_copy(self.xmid,self.weights.get_col(0) * self.xin)
       
     fn calc_xout(inout self):
         self.activation_input = MN.sum(self.xmid) + self.bias
@@ -128,24 +129,11 @@ struct NeuronNN[ACTIVATION_FUNC:ACF = relu](NeuronType):
     fn calc_dxout_dbias(inout self):
         self.dxout_dbias = ACTIVATION_FUNC(self.activation_input, True)
 
-    fn calc_dxmid_dw(inout self):
+    fn calc_dxmid_dw(inout self,inout phi_mat:MM):
         self.dxmid_dw = MM(self.xin.size,1,self.xin)
-        
-    fn calc_dxmid_dxin(inout self):
+
+    fn calc_dxmid_dxin(inout self,inout phi_der_mat:MM ):
         self.dxmid_dxin = self.weights.flatten()
-
-    
-    fn get_phi_mat(self)->MM:
-        return MM(0,0)
-    
-    fn get_phi_der_mat(self)->MM:
-        return MM(0,0)
-
-    fn set_phi_mat(inout self,pm:MM):
-        pass
-    
-    fn set_phi_der_mat(inout self,pdm:MM):
-        pass
 
     @staticmethod
     fn phi_caching_capable()->Bool:

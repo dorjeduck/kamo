@@ -28,7 +28,7 @@ struct ChebyshevPolynomial(EdgeFunc):
         """Generate Chebyshev nodes within the interval [-1, 1]."""
 
         var i = MN.arange(1, self.num_trainable_params + 1)
-        self.nodes = MN.cos((2.0 * i - 1.0) / (2.0 * self.num_trainable_params) * PI)
+        self.nodes = MN.cos((2.0 * i - 1.0) / (2.0 * self.num_trainable_params).cast[dtype]() * PI)
         
 
     fn scale_to_unit(self, x:MV)->MV:
@@ -38,7 +38,7 @@ struct ChebyshevPolynomial(EdgeFunc):
 
    
     fn calc_phi_mat(inout self,inout phi_mat:MM, x: MV, grad: Bool = False):
-          
+        
         if not grad:
             for i in range(self.num_trainable_params):
                 var c = self.chebyshev_polynomial(x, i)     

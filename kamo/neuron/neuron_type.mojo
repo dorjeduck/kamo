@@ -13,7 +13,8 @@ trait NeuronType(CollectionElement):
 
     ## common
 
-    fn __call__(inout self, xin:MV) -> SD:
+    fn __call__(inout self, xin: MV,inout phi_mat:MM,inout phi_mat_der:MM) -> SD:
+
         ...
 
     fn calc_dxout_dxin(inout self):
@@ -38,8 +39,8 @@ trait NeuronType(CollectionElement):
         ...
     
     # neuron type specific
-
-    fn calc_xmid(inout self):
+   
+    fn calc_xmid(inout self,inout phi_mat:MM):
         ...
 
     fn calc_xout(inout self):
@@ -48,25 +49,13 @@ trait NeuronType(CollectionElement):
     fn calc_dxout_dxmid(inout self):
         ...
 
-    fn calc_dxmid_dw(inout self):
+    fn calc_dxmid_dw(inout self,inout phi_mat:MM):
         ...
 
-    fn calc_dxmid_dxin(inout self):
+    fn calc_dxmid_dxin(inout self,inout phi_der_mat:MM ):
         ...
 
     fn calc_dxout_dbias(inout self):
-        ...
-
-    fn get_phi_mat(self)->MM:
-        ...
-    
-    fn get_phi_der_mat(self)->MM:
-        ...
-
-    fn set_phi_mat(inout self,pm:MM):
-        ...
-    
-    fn set_phi_der_mat(inout self,pdm:MM):
         ...
 
     @staticmethod

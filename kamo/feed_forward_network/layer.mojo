@@ -14,6 +14,9 @@ struct FullyConnectedLayer[NT: NeuronType, PHI_CACHING: Bool](
 
     var id: Int
 
+    var phi_mat: MM
+    var phi_der_mat: MM
+
     var do_phi_caching: Bool
 
     fn __init__(
@@ -37,7 +40,7 @@ struct FullyConnectedLayer[NT: NeuronType, PHI_CACHING: Bool](
                     self.n_in,
                     num_trainable_edge_params,
                     weights_range,
-                    i == 0 or not self.do_phi_caching,
+                    i == 0 or not self.do_phi_caching, # only first neuron in layer calculates 
                 )
             )
 
@@ -45,19 +48,15 @@ struct FullyConnectedLayer[NT: NeuronType, PHI_CACHING: Bool](
         self.xout = MV(n_out)  # output, shape (n_out,)
         self.dloss_dxin = MV(n_in)  # d loss / d xin, shape (n_in,)
 
+        self.phi_mat = MM(num_trainable_edge_params,self.n_in)
+        self.phi_der_mat = MM(num_trainable_edge_params,self.n_in)
         self.zero_grad()
 
     fn __call__(inout self, x: MV) -> MV:
         # forward pass
         self.xin = x
         for i in range(self.n_out):
-            if self.do_phi_caching and i > 0:
-                self.neurons[i].set_phi_mat(self.neurons[0].get_phi_mat())
-                self.neurons[i].set_phi_der_mat(
-                    self.neurons[0].get_phi_der_mat()
-                )
-
-            self.xout[i] = self.neurons[i](self.xin)
+            self.xout[i] = self.neurons[i](self.xin,self.phi_mat,self.phi_der_mat)
         return self.xout
 
     fn zero_grad(
@@ -65,7 +64,7 @@ struct FullyConnectedLayer[NT: NeuronType, PHI_CACHING: Bool](
     ):
         for w in which:
             if w[] == "xin":  # reset layer's d loss / d xin
-                self.dloss_dxin = MV(self.n_in)
+                self.dloss_dxin.zero()
 
             elif w[] == "weights":  # reset d loss / dw to zero for every neuron
                 for nn in self.neurons:
@@ -77,6 +76,7 @@ struct FullyConnectedLayer[NT: NeuronType, PHI_CACHING: Bool](
 
     fn update_grad(inout self, dloss_dxout: MV) -> MV:
         # update gradients by chain rule
+        
         for i in range(dloss_dxout.size):
             # update layer's d loss / d xin via chain rule
             self.dloss_dxin += self.neurons[i].get_dxout_dxin() * dloss_dxout[i]

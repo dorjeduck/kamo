@@ -26,11 +26,11 @@ fn main() raises:
     ## training  parameter
 
     var n_iter_train = 5000
-    var loss_tolerance = 0.05
-    var learning_rate_kan_bspline = 0.01
-    var learning_rate_kan_cheby = 0.005
-    var learning_rate_kan_gaussian = 0.0075
-    var learning_rate_nn = 0.005
+    var loss_tolerance:SD = 0.05
+    var learning_rate_kan_bspline:SD = 0.01
+    var learning_rate_kan_cheby:SD = 0.005
+    var learning_rate_kan_gaussian:SD = 0.0075
+    var learning_rate_nn:SD = 0.005
     
     # Training data
 

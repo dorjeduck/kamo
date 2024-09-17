@@ -28,13 +28,9 @@ struct NeuronKAN[EF: EdgeFunc = BSplineSilu[3],x_bounds:SD2= SD2(-1,1)](
     var edge_func: EF  # edge functions 
     var activation: ACF  # neuron activation function
 
-    var phi_mat: MM
-    var phi_der_mat: MM
-
+   
     var unit_vec:MV
-
     var id:NeuronID
-
     var calc_phi_mat:Bool
 
     fn __init__(
@@ -53,7 +49,7 @@ struct NeuronKAN[EF: EdgeFunc = BSplineSilu[3],x_bounds:SD2= SD2(-1,1)](
             weights_range[0],
             weights_range[1],
         )
-
+       
         self.edge_func = EF(num_trainable_edge_params, x_bounds)
 
         self.xin = MV(self.n_in)
@@ -73,28 +69,25 @@ struct NeuronKAN[EF: EdgeFunc = BSplineSilu[3],x_bounds:SD2= SD2(-1,1)](
 
         self.activation = tanh_act  # normalization (for splines...)
        
-        self.phi_mat = MM(num_trainable_edge_params,self.n_in)
-        self.phi_der_mat = MM(num_trainable_edge_params,self.n_in)
-
         self.unit_vec = MV(self.n_in,1.0)
 
         self.calc_phi_mat = calc_phi_mat
 
     ## common to all neuron types
 
-    fn __call__(inout self, x: MV) -> SD:
+    fn __call__(inout self, x: MV,inout phi_mat:MM,inout phi_mat_der:MM) -> SD:
 
         MN.inplace_copy(self.xin,x)
 
         # forward pass: compute neuron's output
-        self.calc_xmid()
+        self.calc_xmid(phi_mat)
         self.calc_xout()
 
         # compute internal derivatives
         self.calc_dxout_dxmid()
         self.calc_dxout_dbias()
-        self.calc_dxmid_dw()
-        self.calc_dxmid_dxin()
+        self.calc_dxmid_dw(phi_mat)
+        self.calc_dxmid_dxin(phi_mat_der)
 
         # compute external derivativesdxout_dxin
         self.calc_dxout_dxin()
@@ -102,7 +95,7 @@ struct NeuronKAN[EF: EdgeFunc = BSplineSilu[3],x_bounds:SD2= SD2(-1,1)](
 
         # return neuron output
         return self.xout
-
+    
     fn calc_dxout_dxin(inout self):
         MN.inplace_copy(self.dxout_dxin,self.dxout_dxmid * self.dxmid_dxin)
 
@@ -128,10 +121,12 @@ struct NeuronKAN[EF: EdgeFunc = BSplineSilu[3],x_bounds:SD2= SD2(-1,1)](
 
     ## kan specific
 
-    fn calc_xmid(inout self):
+    fn calc_xmid(inout self,inout phi_mat:MM):
         if self.calc_phi_mat:
-            self.edge_func.calc_phi_mat(self.phi_mat, self.xin)
-        MN.inplace_copy(self.xmid,MN.sum(self.weights * self.phi_mat, axis=0))
+            self.edge_func.calc_phi_mat(phi_mat, self.xin)
+
+        #print(">>",self.weights.shape(),phi_mat.shape())
+        MN.inplace_copy(self.xmid,MN.sum(self.weights * phi_mat, axis=0))
 
     fn calc_xout(inout self):
         self.xout = self.activation(MN.sum(self.xmid))
@@ -141,18 +136,19 @@ struct NeuronKAN[EF: EdgeFunc = BSplineSilu[3],x_bounds:SD2= SD2(-1,1)](
             Scalar[dtype](MN.sum(self.xmid)), True
         ) * self.unit_vec)
 
-    fn calc_dxmid_dw(inout self):
-        MN.inplace_copy(self.dxmid_dw,self.phi_mat)
+    fn calc_dxmid_dw(inout self,inout phi_mat:MM):
+        MN.inplace_copy(self.dxmid_dw,phi_mat)
        
-    fn calc_dxmid_dxin(inout self):
+    fn calc_dxmid_dxin(inout self,inout phi_der_mat:MM ):
         if self.calc_phi_mat:
-            self.edge_func.calc_phi_mat(self.phi_der_mat, self.xin, True)
-        MN.inplace_copy(self.dxmid_dxin,MN.sum(self.weights * self.phi_der_mat, axis=0))
+            self.edge_func.calc_phi_mat(phi_der_mat, self.xin, True)
+        MN.inplace_copy(self.dxmid_dxin,MN.sum(self.weights * phi_der_mat, axis=0))
 
     fn calc_dxout_dbias(inout self):
         # no bias in KAN!
         self.dxout_dbias = 0
 
+    '''
     fn get_phi_mat(self)->MM:
         return self.phi_mat
     
@@ -164,6 +160,7 @@ struct NeuronKAN[EF: EdgeFunc = BSplineSilu[3],x_bounds:SD2= SD2(-1,1)](
     
     fn set_phi_der_mat(inout self,pdm:MM):
         MN.inplace_copy(self.phi_der_mat,pdm)
+    '''
 
     @staticmethod
     fn phi_caching_capable()->Bool:

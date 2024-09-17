@@ -54,7 +54,7 @@ struct BarPrinter:
         var rate = (
             step + 1
         ) / elapsed_time if elapsed_time > 0 and step > 0 else 0
-        var rate_str = format_float(rate) + " it/s"
+        var rate_str = format_float(rate.cast[dtype]()) + " it/s"
 
         var remaining_time = (self.total - step) / rate if rate > 0 else 0
         var remaining_str = format_seconds(int(remaining_time))

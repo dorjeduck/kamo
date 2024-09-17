@@ -1,6 +1,7 @@
 from algorithm import vectorize
 from algorithm.functional import elementwise
 from math import  log,tanh, sin,cos,exp, trunc, align_down
+from memory.memory import memcpy
 from random import rand
 from utils.numerics import isnan
 
@@ -29,6 +30,17 @@ fn div[dtype: DType, width: Int](x1:SIMD[dtype, width],x2:SIMD[dtype, width])->S
 
 
 struct MoNum[dtype:DType,simd_width:Int]:
+
+    @staticmethod
+    fn split(s:String,sep:String,maxsplit: Int = -1) raises -> MoVector[dtype,simd_width]:
+        var str_list = s.split(sep,maxsplit)
+
+        var res = MoVector[dtype,simd_width](str_list.size)
+
+        for i in range(str_list.size):
+            res[i] = atof(str_list[i]).cast[dtype]()
+        
+        return res
 
     @staticmethod
     fn nantozero(mv:MoVector[dtype,simd_width]):
@@ -249,6 +261,7 @@ struct MoNum[dtype:DType,simd_width:Int]:
         return new_mat
 
     @staticmethod
+    @always_inline
     fn _elemwise_matrix_matrix[
         func: fn[dtype: DType, width: Int] (
             SIMD[dtype, width], SIMD[dtype, width]
@@ -266,7 +279,6 @@ struct MoNum[dtype:DType,simd_width:Int]:
                     mat._mat_ptr.load[width=width](iv),
                 ),
             )
-
         vectorize[matrix_matrix_vectorize, simd_width](len(mm))
         return new_mat
 
@@ -318,11 +330,12 @@ struct MoNum[dtype:DType,simd_width:Int]:
         @parameter
         fn _fun[width: Int](iv: Int) -> None:
             new_mat._mat_ptr.store[width=width](iv, pow(mm._mat_ptr.load[width=width](iv), SIMD[dtype, width](p)))
+        
         vectorize[_fun, simd_width](len(mm))
         return new_mat
 
     @staticmethod
-    fn _minmax(ptr:DTypePointer[dtype],size:Int) -> (Scalar[dtype],Scalar[dtype]):
+    fn _minmax(ptr:UnsafePointer[Scalar[dtype]],size:Int) -> (Scalar[dtype],Scalar[dtype]):
 
         var low:Scalar[dtype] = 1e1
         var high:Scalar[dtype] = -1e12

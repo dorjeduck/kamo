@@ -1,5 +1,4 @@
-from sys.terminate import exit
-
+from sys.terminate import exit 
 from kamo import MN,MM,MV,SD,SD2
 from kamo.func import silu_mv
 
@@ -23,7 +22,6 @@ struct BSplineSilu[SPLINE_DEGREE: Int = 3, ADD_SILU: Bool = True](EdgeFunc):
 
     fn calc_phi_mat(inout self, inout phi_mat: MM, xx: MV, grad: Bool = False):
         var x = self.scale_to_unit(xx)
-
         var start = 1 if ADD_SILU else 0
 
         if not grad:
@@ -129,7 +127,7 @@ struct BSplineSilu[SPLINE_DEGREE: Int = 3, ADD_SILU: Bool = True](EdgeFunc):
 
         var n_mid = num_knots - 2 * (SPLINE_DEGREE)
 
-        var step = 2 / (n_mid - 1)
+        var step = (2 / (n_mid - 1)).cast[dtype]()
 
         for i in range(n_mid):
             self.knots[SPLINE_DEGREE + i] = -1 + i * step

@@ -1,5 +1,9 @@
+from collections.inline_array import InlineArray
+from sys.info import simdwidthof
+
+
 # settings
-alias dtype = DType.float64
+alias dtype = DType.float32
 alias simd_width = 2 * simdwidthof[dtype]()
 alias eps = 1e-12
 

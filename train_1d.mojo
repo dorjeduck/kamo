@@ -24,9 +24,9 @@ fn main() raises:
 
     ## training  parameter
     var n_max_iter_train = 5000
-    var loss_tolerance = 0.005
-    var learning_rate_kan = 0.01
-    var learning_rate_nn = 0.005
+    var loss_tolerance:SD = 0.005
+    var learning_rate_kan:SD = 0.01
+    var learning_rate_nn:SD = 0.005
    
     # Training data
 
@@ -55,7 +55,6 @@ fn main() raises:
               y_train, 
               n_iter_max=n_max_iter_train, 
               loss_tolerance=loss_tolerance)
-
 
     print("\nKAN training (Chebyshev Polynominal edges)")
 

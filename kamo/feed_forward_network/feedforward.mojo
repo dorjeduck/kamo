@@ -32,15 +32,20 @@ struct FeedForward[NT: NeuronType, LF: LossFunction,PHI_CACHING:Bool=True]:
         self.n_layers = self.layer_len.size - 1
         self.layers = List[FullyConnectedLayer[NT,PHI_CACHING]](capacity=self.n_layers)
 
+        self.loss_hist = MV(0)
+        self.loss = 0
+        
+
         for ii in range(self.n_layers):
             self.layers.append(
                 FullyConnectedLayer[NT,PHI_CACHING](ii, layer_len[ii], layer_len[ii + 1],
                 num_trainable_edge_params,
                 weights_range)
             )
-
+            
         self.loss = LF(self.layer_len[-1])
-        self.loss_hist = MV(0)
+       
+        
 
         if seed_val == -1:
             seed(now())
@@ -93,7 +98,14 @@ struct FeedForward[NT: NeuronType, LF: LossFunction,PHI_CACHING:Bool=True]:
         fn _iter(it: Int, inout bs: BarSettings) -> Bool:
             var loss: SD = 0.0  # reset loss
 
+            # zero grad
+            for layer in self.layers:
+                layer[].zero_grad(
+                    which=List[String]("weights", "bias")
+                )  # reset gradient wrt par to zero
+
             for ii in range(x_train.rows):
+               
                 # forward pass
                 var x_out = self(x_train.get_row(ii))
 
@@ -117,18 +129,14 @@ struct FeedForward[NT: NeuronType, LF: LossFunction,PHI_CACHING:Bool=True]:
                     + ", Convergence!"
                 )
                 return False
-            if it % 10 == 0:
+            if it % 1 == 0:
                 bs.postfix = "loss: " + str_maxlen(str(loss), 6)
                 
             # update parameters
 
             self.gradient_descent_par()  
 
-            for layer in self.layers:
-                layer[].zero_grad(
-                    which=List[String]("weights", "bias")
-                )  # reset gradient wrt par to zero
-
+           
             return True
 
         progress_bar[_iter](n_iter_max,

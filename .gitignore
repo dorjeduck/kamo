@@ -1,2 +1,10 @@
 .DS_Store
 /lab/
+/data/mnist_csv/
+/imgs/
+/benchmark/# pixi environments
+.pixi
+*.egg-info
+# magic environments
+.magic
+magic.lock

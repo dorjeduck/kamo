@@ -1,11 +1,6 @@
 from math import log
 
-from kamo import dtype, simd_width
-from kamo.libs.monum import MoVector, MoNum
-
-alias SD = Scalar[dtype]
-alias MV = MoVector[dtype, simd_width]
-alias MN = MoNum[dtype, simd_width]
+from kamo import MN,MM,MV,SD,SD2
 
 struct CrossEntropyLoss(LossFunction):
     

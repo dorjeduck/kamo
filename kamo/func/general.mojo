@@ -18,10 +18,11 @@ fn silu(x: SD, grad: Bool = False) -> SD:
         return (1.0 + MN.exp(-x) + x * MN.exp(-x)) / MN.pow(1.0 + MN.exp(-x))
 
 fn relu(x: SD, grad: Bool = False) -> SD:
+    var res:SD = 0.0
     if not grad:
-        return 0 if x < 0 else x
+        return res if x < 0 else x
     else:
-        return 0 if x < 0 else 1.0
+        return res if x < 0 else 1.0
 
 fn tanh_act(x: SD, grad: Bool = False) -> SD:
     if not grad:

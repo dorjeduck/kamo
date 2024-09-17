@@ -1,5 +1,4 @@
 from kamo import MN,MM,MV,SD,SD2
-from kamo.libs.monum import MoVector, MoNum
 
 struct SquaredLoss(LossFunction):
     var n_in: Int
