@@ -23,7 +23,8 @@ The fundamental innovation of KANs lies in their learnable activation functions 
 
 ## Usage
 
-**Prerequisite**: Ensure you have [Mojo](https://docs.modular.com/mojo/) 24.4 installed.
+* Ensure that the `Magic` command line tool is installed by following the [Modular Docs](https://docs.modular.com/magic)
+* Run `magic shell` within the cloned repository to install Mojo 24.5 and enter an environment in which you can run the mojo apps.
 
 The [ML without tears](https://mlwithouttears.com/2024/05/15/a-from-scratch-implementation-of-kolmogorov-arnold-networks-kan/) implementation offers some basic usage examples to get started. We ported the first two of them to [Mojo](https://docs.modular.com/mojo/).
 
@@ -53,22 +54,23 @@ Currently, this project is for our own educational purposes, with no immediate p
 
 ## Remarks
 
-- The current implementation covers only the basic KAN concepts. The paper [KAN: Kolmogorov-Arnold Networks](https://arxiv.org/abs/2404.19756) suggests various ways to enhance KANs, such as sparsification and grid extension, and has inspired extensive follow-up research. There is plenty of room for improvement in our implementation.
-- For simplicity, we use `tanh` to normalize the edge inputs to the range of spline grids. This technique is widely used by other performance-optimized KAN implementations (see, for example, [FasterKAN](https://github.com/AthanasiosDelis/faster-kan)).
-- Mojo is evolving quickly but is still quite young and limited in some aspects, such as full support for dynamic polymorphism. Some of the boilerplate in our code is due to these limitations. We're looking forward to improve our implementation as Mojo continues to mature.
-
+* The current implementation covers only the basic KAN concepts. The paper [KAN: Kolmogorov-Arnold Networks](https://arxiv.org/abs/2404.19756) suggests various ways to enhance KANs, such as sparsification and grid extension, and has inspired extensive follow-up research. There is plenty of room for improvement in our implementation.
+* For simplicity, we use `tanh` to normalize the edge inputs to the range of spline grids. This technique is widely used by other performance-optimized KAN implementations (see, for example, [FasterKAN](https://github.com/AthanasiosDelis/faster-kan)).
+* Mojo is evolving quickly but is still quite young and limited in some aspects, such as full support for dynamic polymorphism. Some of the boilerplate in our code is due to these limitations. We're looking forward to improve our implementation as Mojo continues to mature.
 
 ## Resources
 
-- The GitHub repository associated with the above referenced paper can be found here: [pykan](https://github.com/KindXiaoming/pykan).
-- [Awesome KAN](https://github.com/mintisan/awesome-kan) A curated list of awesome libraries, projects, tutorials, papers, and other resources related to Kolmogorov-Arnold Network (KAN).
+* The GitHub repository associated with the above referenced paper can be found here: [pykan](https://github.com/KindXiaoming/pykan).
+* [Awesome KAN](https://github.com/mintisan/awesome-kan) A curated list of awesome libraries, projects, tutorials, papers, and other resources related to Kolmogorov-Arnold Network (KAN).
 
 ## Changelog
-  
-- 2024.06.14
-  - Added Gaussian Radial Basis Functions (inspired by [FastKAN](https://github.com/ZiyaoLi/fast-kan))
-- 2024.06.13
-  - Initial commit version 2
+
+* 2024.09.17
+  * Updated to Mojo 24.5
+* 2024.06.14
+  * Added Gaussian Radial Basis Functions (inspired by [FastKAN](https://github.com/ZiyaoLi/fast-kan))
+* 2024.06.13
+  * Initial commit version 2
 
 ## License
 
