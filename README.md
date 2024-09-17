@@ -23,6 +23,8 @@ The fundamental innovation of KANs lies in their learnable activation functions 
 
 ## Usage
 
+**Prerequisite**:
+
 * Ensure that the `Magic` command line tool is installed by following the [Modular Docs](https://docs.modular.com/magic)
 * Run `magic shell` within the cloned repository to install Mojo 24.5 and enter an environment in which you can run the mojo apps.
 
