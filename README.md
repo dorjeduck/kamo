@@ -52,7 +52,7 @@ Performance:
 
 ## Just Learning
 
-Currently, this project is for our own educational purposes, with no immediate plans to make it suitable for real-world applications. Similar to the original Python code, this KAN implementation prioritizes network transparency over speed. If you're looking for a Mojo deep learning framework with competitive performance features, check out [Basalt](https://github.com/basalt-org/basalt).
+Currently, this project is for our own educational purposes, with no immediate plans to make it suitable for real-world applications. Similar to the original Python code, this KAN implementation prioritizes network transparency over speed. If you're looking for a Mojo deep learning framework with competitive performance features, check out [Basalt](https://github.com/basalt-org/basalt) and [Endia](https://github.com/endia-org/Endia).
 
 ## Remarks
 
