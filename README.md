@@ -10,7 +10,7 @@ This repository explores KANs by porting the KAN Python implementation from [ML 
 
 ## Empowering edges
 
-The fundamental innovation of KANs lies in their learnable activation functions on edges. The paper [KAN: Kolmogorov-Arnold Networks](https://arxiv.org/abs/2404.19756) suggests using a linear combination of B-Splines and the SiLU function. Subsequent research also recommends the use of Chebyshev polynomials among others. One key feature of these functions is that their derivatives are well defined and easy to calculate, which is crucial for gradient descent optimization.
+The fundamental innovation of KANs lies in their learnable activation functions on edges. The paper [KAN: Kolmogorov-Arnold Networks](https://arxiv.org/abs/2404.19756) suggests using a linear combination of B-Splines and the SILU function. Subsequent research also recommends the use of Chebyshev polynomials among others. One key feature of these functions is that their derivatives are well defined and easy to calculate, which is crucial for gradient descent optimization.
 
 | **Basis Functions** | **Derivatives** |
 |--------------------|----------------|
@@ -26,7 +26,7 @@ The fundamental innovation of KANs lies in their learnable activation functions 
 **Prerequisite**:
 
 * Ensure that the `Magic` command line tool is installed by following the [Modular Docs](https://docs.modular.com/magic)
-* Run `magic shell` within the cloned repository to install Mojo 24.5 and enter an environment in which you can run the mojo apps.
+* Run `magic shell` within the cloned repository to install Mojo 24.5 and to enter the project's virtual environment in which you can run the mojo apps.
 
 The [ML without tears](https://mlwithouttears.com/2024/05/15/a-from-scratch-implementation-of-kolmogorov-arnold-networks-kan/) implementation offers some basic usage examples to get started. We ported the first two of them to [Mojo](https://docs.modular.com/mojo/).
 
