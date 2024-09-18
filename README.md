@@ -25,8 +25,8 @@ The fundamental innovation of KANs lies in their learnable activation functions 
 
 **Prerequisite**:
 
-* Ensure that the `Magic` command line tool is installed by following the [Modular Docs](https://docs.modular.com/magic)
-* Run `magic shell` within the cloned repository to install the project's dependencies (Mojo 24.5 via Max, Matplotlib), and to activate the project's virtual environment in which you can run the mojo apps.
+* Ensure that the `Magic` command line tool is installed by following the [Modular Docs](https://docs.modular.com/magic).
+* Run `magic shell` within the root of the cloned repository to install the project's dependencies (Mojo 24.5 via Max, Matplotlib), and to activate the project's virtual environment in which you can run the mojo apps.
 
 The [ML without tears](https://mlwithouttears.com/2024/05/15/a-from-scratch-implementation-of-kolmogorov-arnold-networks-kan/) implementation offers some basic usage examples to get started. We ported the first two of them to [Mojo](https://docs.modular.com/mojo/).
 
