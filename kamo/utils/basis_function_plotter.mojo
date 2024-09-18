@@ -1,4 +1,4 @@
-from python import Python
+from python import Python,PythonObject
 
 from kamo import MN, MM, SD2
 from kamo.func.edge import EdgeFunc
@@ -33,7 +33,8 @@ struct BasisFunctionPlotter:
         )
 
         self.plt = Python.import_module("matplotlib.pyplot")
-
+        
+    
     fn plot[EF:EdgeFunc](inout self, inout func: EF, title: String, path: String,derivative:Bool=False) raises:
         ## plot
 
