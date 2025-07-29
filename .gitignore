@@ -1,7 +1,6 @@
 .DS_Store
 /lab/
 /data/mnist_csv/
-/imgs/
 /benchmark/
 .pixi
 *.egg-info
