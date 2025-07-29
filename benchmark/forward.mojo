@@ -33,9 +33,9 @@ fn main() raises:
 
     for i in range(num_rows):
         var data = lines[i+1].split(",")
-        y_train[i,0] = int(data[0])
+        y_train[i,0] = Int(data[0])
         for j in range(num_pix):
-            x_train[i,j] = int(data[j+1])
+            x_train[i,j] = Int(data[j+1])
          
     var kan1 = FeedForward
         [

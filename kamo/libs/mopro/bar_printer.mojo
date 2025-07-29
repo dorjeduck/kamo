@@ -1,4 +1,4 @@
-from time import now
+from time import perf_counter
 from .utils import (
     format_float,
     format_seconds,
@@ -21,21 +21,21 @@ struct BarPrinter:
     var bar_settings: BarSettings
 
     var total_size: Int
-    var start: Int
+    var start: Float64
 
-    fn __init__(inout self, total: Int, bar_settings: BarSettings):
+    fn __init__(out self, total: Int, bar_settings: BarSettings):
         self.total = total
         self.bar_settings = bar_settings
 
-        self.total_size = len(str(total))
+        self.total_size = len(String(total))
         self.start = 0
 
-    fn print(inout self, step: Int):
+    fn print(mut self, step: Int):
         if step == 0:
-            self.start = now()
+            self.start = perf_counter()
         var bar: String = "|"
         for j in range(self.bar_settings.bar_size):
-            if j < int((step * self.bar_settings.bar_size) / self.total):
+            if j < Int((step * self.bar_settings.bar_size) / self.total):
                 bar += self.bar_settings.bar_fill
             else:
                 bar += self.bar_settings.bar_empty
@@ -43,13 +43,13 @@ struct BarPrinter:
         var prefix_space = " " if len(self.bar_settings.prefix) > 0 else ""
 
         bar += "|"
-        var percent_str = int_to_padded_string(
-            100 * step // self.total, 3
-        ) + "%"
+        var percent_str = (
+            int_to_padded_string(100 * step // self.total, 3) + "%"
+        )
         var step_str = int_to_padded_string(step, self.total_size)
 
-        var elapsed_time = (now() - self.start) / 1e9
-        var elapsed_str = format_seconds(int(elapsed_time))
+        var elapsed_time = (perf_counter() - self.start) / 1e9
+        var elapsed_str = format_seconds(Int(elapsed_time))
 
         var rate = (
             step + 1
@@ -57,13 +57,23 @@ struct BarPrinter:
         var rate_str = format_float(rate.cast[dtype]()) + " it/s"
 
         var remaining_time = (self.total - step) / rate if rate > 0 else 0
-        var remaining_str = format_seconds(int(remaining_time))
+        var remaining_str = format_seconds(Int(remaining_time))
 
-        var postfix_str = "" if len(
-            self.bar_settings.postfix
-        ) == 0 else ", " + self.bar_settings.postfix
+        var postfix_str = (
+            "" if len(self.bar_settings.postfix)
+            == 0 else ", " + self.bar_settings.postfix
+        )
 
-        var info_str = "[" + elapsed_str + "<" + remaining_str + ", " + rate_str + postfix_str + "]"
+        var info_str = (
+            "["
+            + elapsed_str
+            + "<"
+            + remaining_str
+            + ", "
+            + rate_str
+            + postfix_str
+            + "]"
+        )
 
         print(
             "\r"
@@ -75,7 +85,7 @@ struct BarPrinter:
             + " "
             + step_str
             + "/"
-            + str(self.total)
+            + String(self.total)
             + " "
             + info_str,
             end="   ",
@@ -86,7 +96,7 @@ struct BarPrinter:
         var res: String = ""
         res += "prefix: " + self.bar_settings.prefix + "\n"
         res += "postfix: " + self.bar_settings.postfix + "\n"
-        res += "bar_size: " + str(self.bar_settings.bar_size) + "\n"
+        res += "bar_size: " + String(self.bar_settings.bar_size) + "\n"
         res += "bar_fill: " + self.bar_settings.bar_fill + "\n"
         res += "bar_empty: " + self.bar_settings.bar_empty
 

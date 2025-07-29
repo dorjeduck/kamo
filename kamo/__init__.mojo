@@ -8,7 +8,7 @@ alias simd_width = 2 * simdwidthof[dtype]()
 alias eps = 1e-12
 
 # convenience ...
-from kamo.libs.monum import MoNum,MoVector,MoMatrix
+from kamo.libs.monum import MoNum, MoVector, MoMatrix
 
 alias SD = Scalar[dtype]
 alias SD2 = InlineArray[SD, 2]

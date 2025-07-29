@@ -138,7 +138,7 @@ fn main() raises:
 
     var plt = Python.import_module("matplotlib.pyplot")
 
-    var fig = plt.figure(figsize=(10,7))
+    var fig = plt.figure(figsize=[10,7])
     var ax = fig.add_subplot(111)
 
     var x_numpy = x_plot.get_col(0).to_numpy()

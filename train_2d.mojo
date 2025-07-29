@@ -169,7 +169,7 @@ fn main() raises:
 
     var plt = Python.import_module("matplotlib.pyplot")
 
-    var fig = plt.figure(figsize=(14,9))
+    var fig = plt.figure(figsize=[14,9])
 
     var ax1 = fig.add_subplot(321)  # First row, middle column
     var ax2 = fig.add_subplot(323)  # Second row, first column

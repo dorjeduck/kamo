@@ -1,63 +1,63 @@
-from kamo import MN,MM,MV,SD,SD2
+from kamo import MN, MM, MV, SD, SD2
 
-trait NeuronType(CollectionElement):
+
+trait NeuronType(Copyable & Movable):
     fn __init__(
-        inout self, 
-        id:NeuronID,
-        n_in: Int, 
-        num_trainable_edge_params:Int,
-        weights_range:SD2,
-        calc_phi_mat:Bool = True
+        out self,
+        id: NeuronID,
+        n_in: Int,
+        num_trainable_edge_params: Int,
+        weights_range: SD2,
+        calc_phi_mat: Bool = True,
     ):
         ...
 
     ## common
 
-    fn __call__(inout self, xin: MV,inout phi_mat:MM,inout phi_mat_der:MM) -> SD:
-
+    fn __call__(mut self, xin: MV, phi_mat: MM, phi_mat_der: MM) -> SD:
         ...
 
-    fn calc_dxout_dxin(inout self):
+    fn calc_dxout_dxin(self):
         ...
 
-    fn calc_dxout_dw(inout self):
+    fn calc_dxout_dw(self):
         ...
 
-    fn update_dloss_dw_dbias(inout self, dloss_dxout: SD):
+    fn update_dloss_dw_dbias(mut self, dloss_dxout: SD):
         ...
 
-    fn gradient_descent(inout self, learning_rate: SD):
+    fn gradient_descent(mut self, learning_rate: SD):
         ...
 
     fn get_dxout_dxin(self) -> MV:
         ...
 
-    fn zero_dloss_dw(inout self):
+    fn zero_dloss_dw(self):
         ...
-    
-    fn zero_dloss_dbias(inout self):
+
+    fn zero_dloss_dbias(mut self):
         ...
-    
+
     # neuron type specific
-   
-    fn calc_xmid(inout self,inout phi_mat:MM):
+
+    fn calc_xmid(self, phi_mat: MM):
         ...
 
-    fn calc_xout(inout self):
+    fn calc_xout(mut self):
         ...
 
-    fn calc_dxout_dxmid(inout self):
+    fn calc_dxout_dxmid(mut self):
         ...
 
-    fn calc_dxmid_dw(inout self,inout phi_mat:MM):
+    fn calc_dxmid_dw(mut self, phi_mat: MM):
         ...
 
-    fn calc_dxmid_dxin(inout self,inout phi_der_mat:MM ):
+    fn calc_dxmid_dxin(mut self, phi_der_mat: MM):
         ...
 
-    fn calc_dxout_dbias(inout self):
+    fn calc_dxout_dbias(mut self):
         ...
 
     @staticmethod
-    fn phi_caching_capable()->Bool:
+    fn phi_caching_capable() -> Bool:
         ...

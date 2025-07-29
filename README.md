@@ -8,6 +8,8 @@ The following excerpt from the abstract of the paper [KAN: Kolmogorov-Arnold Net
 
 This repository explores KANs by porting the KAN Python implementation from [ML without tears](https://mlwithouttears.com/2024/05/15/a-from-scratch-implementation-of-kolmogorov-arnold-networks-kan/) to Mojo. This very readable Python implementation provides a flexible foundation, enabling instantiation as either a KAN or a classic MLP, which allows for various comparisons and experiments. The main focus is on understanding the core concepts rather than on optimizing performance or implementing all aspects of KANs.
 
+> **Note**: This project is based on the stable Mojo 25.4 release.
+
 ## Empowering edges
 
 The fundamental innovation of KANs lies in their learnable activation functions on edges. The paper [KAN: Kolmogorov-Arnold Networks](https://arxiv.org/abs/2404.19756) suggests using a linear combination of B-Splines and the SILU function. Subsequent research also recommends the use of Chebyshev polynomials among others. One key feature of these functions is that their derivatives are well defined and easy to calculate, which is crucial for gradient descent optimization.
@@ -25,8 +27,8 @@ The fundamental innovation of KANs lies in their learnable activation functions 
 
 **Prerequisite**:
 
-* Ensure that the `Magic` command line tool is installed by following the [Modular Docs](https://docs.modular.com/magic).
-* Run `magic shell` within the root of the cloned repository to install the project's dependencies (Mojo 24.5 via Max, Matplotlib), and to activate the project's virtual environment in which you can run the mojo apps.
+* If you don't have it, install [pixi](https://pixi.sh/latest/):
+* Run `pixi shell` within the root of the cloned repository to install the project's dependencies (Mojo 25.4), and to activate the project's virtual environment in which you can run the mojo apps.
 
 The [ML without tears](https://mlwithouttears.com/2024/05/15/a-from-scratch-implementation-of-kolmogorov-arnold-networks-kan/) implementation offers some basic usage examples to get started. We ported the first two of them to [Mojo](https://docs.modular.com/mojo/).
 
@@ -67,8 +69,8 @@ Currently, this project is for our own educational purposes, with no immediate p
 
 ## Changelog
 
-* 2024.09.17
-  * Updated to Mojo 24.5
+<* 2024.09.17
+  * Updated to Mojo 24.5>
 * 2024.06.14
   * Added Gaussian Radial Basis Functions (inspired by [FastKAN](https://github.com/ZiyaoLi/fast-kan))
 * 2024.06.13

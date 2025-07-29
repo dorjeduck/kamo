@@ -2,8 +2,11 @@
 /lab/
 /data/mnist_csv/
 /imgs/
-/benchmark/# pixi environments
+/benchmark/
 .pixi
 *.egg-info
-# magic environments
-.magic
+.github/copilot-instructions.md
+
+llms-mojo.txt
+CLAUDE.md
+train_m

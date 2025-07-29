@@ -1,24 +1,26 @@
+import math
+
 from algorithm import vectorize
-from memory.memory import memcpy,memset_zero
-from python import Python,PythonObject
+from memory import memcpy, memset_zero, UnsafePointer
+from python import Python, PythonObject
 from random import rand
 from sys.info import simdwidthof
 
-
 from .mo_num import add, sub, mul, div
 
+
 struct MoVector[dtype: DType, simd_width: Int](
-    Stringable, CollectionElement, Sized
+    Copyable, Movable, Sized, Stringable
 ):
     var _vec_ptr: UnsafePointer[Scalar[dtype]]
     var size: Int
 
-    fn __init__(inout self, size: Int):
+    fn __init__(out self, size: Int):
         self.size = size
         self._vec_ptr = UnsafePointer[Scalar[dtype]].alloc(size)
         memset_zero(self._vec_ptr, self.size)
 
-    fn __init__(inout self, size: Int, val: Scalar[dtype]):
+    fn __init__(out self, size: Int, val: Scalar[dtype]):
         self.size = size
         self._vec_ptr = UnsafePointer[Scalar[dtype]].alloc(size)
 
@@ -28,28 +30,28 @@ struct MoVector[dtype: DType, simd_width: Int](
 
         vectorize[_set_val, simd_width](self.size)
 
-    fn __init__(inout self, size: Int, *data: Scalar[dtype]):
+    fn __init__(out self, size: Int, *data: Scalar[dtype]):
         self.size = size
         self._vec_ptr = UnsafePointer[Scalar[dtype]].alloc(self.size)
         for i in range(self.size):
             self._vec_ptr[i] = data[i]
 
-    fn __init__(inout self, size: Int, ptr: UnsafePointer[Scalar[dtype]]):
+    fn __init__(out self, size: Int, ptr: UnsafePointer[Scalar[dtype]]):
         self.size = size
         self._vec_ptr = ptr
 
-    fn __init__(inout self, list: List[Scalar[dtype]]):
+    fn __init__(out self, list: List[Scalar[dtype]]):
         self.size = len(list)
         self._vec_ptr = UnsafePointer[Scalar[dtype]].alloc(self.size)
         for i in range(self.size):
             self._vec_ptr[i] = list[i]
-        
-    fn __copyinit__(inout self, other: Self):
+
+    fn __copyinit__(out self, other: Self):
         self.size = other.size
         self._vec_ptr = UnsafePointer[Scalar[dtype]].alloc(self.size)
         memcpy(self._vec_ptr, other._vec_ptr, self.size)
 
-    fn __moveinit__(inout self, owned existing: Self):
+    fn __moveinit__(out self, owned existing: Self):
         self._vec_ptr = existing._vec_ptr
         self.size = existing.size
         existing.size = 0
@@ -59,7 +61,7 @@ struct MoVector[dtype: DType, simd_width: Int](
         self._vec_ptr.free()
 
     @always_inline
-    fn __setitem__(inout self, idx: Int, val: Scalar[dtype]):
+    fn __setitem__(self, idx: Int, val: Scalar[dtype]):
         self._vec_ptr.store[width=1](idx, val)
 
     @always_inline
@@ -91,7 +93,7 @@ struct MoVector[dtype: DType, simd_width: Int](
         return self._elemwise_scalar_math[sub](val)
 
     @always_inline
-    fn __iadd__(inout self, other: Self):
+    fn __iadd__(self, other: Self):
         @parameter
         fn tensor_tensor_vectorize[simd_width: Int](idx: Int) -> None:
             self._vec_ptr.store[width=simd_width](
@@ -103,7 +105,7 @@ struct MoVector[dtype: DType, simd_width: Int](
         vectorize[tensor_tensor_vectorize, simd_width](len(self))
 
     @always_inline
-    fn __isub__(inout self, other: Self):
+    fn __isub__(self, other: Self):
         return self.__iadd__(-other)
 
     fn __radd__(self, val: Scalar[dtype]) -> Self:
@@ -127,7 +129,7 @@ struct MoVector[dtype: DType, simd_width: Int](
         return self._elemwise_vec_vec[div](vec)
 
     @always_inline
-    fn __itruediv__(inout self, s: Scalar[dtype]):
+    fn __itruediv__(self, s: Scalar[dtype]):
         alias simd_width = self.simd_width
 
         @parameter
@@ -182,7 +184,7 @@ struct MoVector[dtype: DType, simd_width: Int](
         for i in range(self.size):
             if i > 0:
                 printStr += ", "
-            printStr += str(self._vec_ptr[i])
+            printStr += String(self._vec_ptr[i])
         printStr += "]"
         return printStr
 
@@ -201,36 +203,11 @@ struct MoVector[dtype: DType, simd_width: Int](
         var res = MoVector[dtype, simd_width](size)
         rand(res._vec_ptr, size)
         return res
-
-    @staticmethod
-    fn from_numpy(np_array: PythonObject) raises -> Self:
-        var np_vec_ptr = UnsafePointer[Scalar[dtype]](
-            __mlir_op.`pop.index_to_pointer`[
-                _type = __mlir_type[`!kgen.pointer<scalar<`, dtype.value, `>>`]
-            ](
-                SIMD[DType.index, 1](
-                    np_array.__array_interface__["data"][0].__index__()
-                ).value
-            )
-        )
-        var size = int(np_array.shape[0])
-        var out = MoVector[dtype, simd_width](size)
-
-        memcpy(out._vec_ptr, np_vec_ptr, size)
-
-        return out
-
-    '''
-    fn to_numpy(self) raises -> PythonObject:
-        var np = Python.import_module("numpy")
-        var np_arr = np.empty((self.height,self.width), dtype='f')
-        memcpy(np_arr.__array_interface__['data'][0].unsafe_get_as_pointer[DType.float32](), self.data, self.size)
-        return np_arr^
-    '''
+ 
     
     fn to_numpy(self) raises -> PythonObject:
         var np = Python.import_module("numpy")
-       
+
         var type = np.float32
         if dtype == DType.float64:
             type = np.float64
@@ -239,27 +216,22 @@ struct MoVector[dtype: DType, simd_width: Int](
 
         var np_vec = np.zeros(self.size, dtype=type)
 
-        '''
-        var np_vec_ptr = UnsafePointer[Scalar[dtype]](
-            __mlir_op.`pop.index_to_pointer`[
-                _type = __mlir_type[`!kgen.pointer<scalar<`, dtype.value, `>>`]
-            ](
-                SIMD[DType.index, 1](
-                    np_vec.__array_interface__["data"][0].__index__()
-                ).value
-            )
-        )
-        '''
 
-        memcpy(np_vec.__array_interface__['data'][0].unsafe_get_as_pointer[dtype](), self._vec_ptr, len(self))
-       
-        #memcpy(np_vec_ptr, self._vec_ptr, len(self))
+        memcpy(
+            np_vec.__array_interface__["data"][0].unsafe_get_as_pointer[
+                dtype
+            ](),
+            self._vec_ptr,
+            len(self),
+        )
+
+        # memcpy(np_vec_ptr, self._vec_ptr, len(self))
 
         return np_vec^
     
 
     @always_inline
-    fn zero(inout self) -> None:
+    fn zero(self) -> None:
         memset_zero(self._vec_ptr, self.size)
 
     @always_inline
@@ -288,6 +260,7 @@ struct MoVector[dtype: DType, simd_width: Int](
                     SIMD[dtype, simd_width](s),
                 ),
             )
+
         vectorize[elemwise_vectorize, simd_width](self.size)
         return new_vect
 

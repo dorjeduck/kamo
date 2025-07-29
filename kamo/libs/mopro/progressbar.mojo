@@ -1,4 +1,4 @@
-from time.time import sleep, now
+from time.time import sleep, perf_counter
 from .bar_printer import BarPrinter, BarSettings
 from .utils import (
     format_float,
@@ -18,7 +18,7 @@ fn progress_bar[
     bar_fill: String = "█",
     bar_empty: String = "░",
 ):
-    fn _f(i: Int, inout bs: BarSettings, /) capturing -> Bool:
+    fn _f(i: Int, mut bs: BarSettings, /) capturing -> Bool:
         callback(i)
         return True
 
@@ -35,14 +35,14 @@ fn progress_bar[
     bar_fill: String = "█",
     bar_empty: String = "░",
 ):
-    fn _f(i: Int, inout bs: BarSettings, /) capturing -> Bool:
+    fn _f(i: Int, mut bs: BarSettings, /) capturing -> Bool:
         return callback(i)
 
     progress_bar[_f](total, prefix, postfix, bar_size, bar_fill, bar_empty)
 
 
 fn progress_bar[
-    callback: fn (Int, inout BarSettings, /) capturing -> None
+    callback: fn (Int, mut BarSettings, /) capturing -> None
 ](
     total: Int,
     prefix: String = "",
@@ -51,7 +51,7 @@ fn progress_bar[
     bar_fill: String = "█",
     bar_empty: String = "░",
 ):
-    fn _f(i: Int, inout bs: BarSettings, /) capturing -> Bool:
+    fn _f(i: Int, mut bs: BarSettings, /) capturing -> Bool:
         callback(i, bs)
         return True
 
@@ -59,7 +59,7 @@ fn progress_bar[
 
 
 fn progress_bar[
-    callback: fn (Int, inout BarSettings, /) capturing -> Bool
+    callback: fn (Int, mut BarSettings, /) capturing -> Bool
 ](
     total: Int,
     prefix: String = "",

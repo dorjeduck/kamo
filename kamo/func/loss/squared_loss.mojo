@@ -1,4 +1,5 @@
-from kamo import MN,MM,MV,SD,SD2
+from kamo import MN, MM, MV, SD, SD2
+
 
 struct SquaredLoss(LossFunction):
     var n_in: Int
@@ -7,7 +8,7 @@ struct SquaredLoss(LossFunction):
     var loss: SD
     var y_train: MV
 
-    fn __init__(inout self, n_in: Int):
+    fn __init__(out self, n_in: Int):
         self.n_in = n_in
 
         self.y = MV(0)
@@ -15,8 +16,7 @@ struct SquaredLoss(LossFunction):
         self.loss = 0
         self.y_train = MV(0)
 
-    fn __call__(inout self, y: MV, y_train: MV) -> SD:
-       
+    fn __call__(mut self, y: MV, y_train: MV) -> SD:
         self.y = y
         self.y_train = y_train
         self.calc_loss()
@@ -24,14 +24,14 @@ struct SquaredLoss(LossFunction):
 
         return self.loss
 
-    fn get_loss(self)->SD:
+    fn get_loss(self) -> SD:
         return self.loss
-    
-    fn get_dloss_dy(self)->MV:
+
+    fn get_dloss_dy(self) -> MV:
         return self.dloss_dy
 
-    fn calc_loss(inout self):
+    fn calc_loss(mut self):
         self.loss = MN.mean(self.y - self.y_train)
 
-    fn calc_dloss_dy(inout self):
+    fn calc_dloss_dy(mut self):
         self.dloss_dy = 2 * (self.y - self.y_train) / SD(self.y.size)
