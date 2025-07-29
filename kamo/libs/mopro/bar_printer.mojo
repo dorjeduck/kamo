@@ -1,6 +1,5 @@
 from time import perf_counter
 from .utils import (
-    format_float,
     format_seconds,
     int_to_padded_string,
     mult_string,
@@ -48,13 +47,13 @@ struct BarPrinter:
         )
         var step_str = int_to_padded_string(step, self.total_size)
 
-        var elapsed_time = (perf_counter() - self.start) / 1e9
+        var elapsed_time = perf_counter() - self.start
         var elapsed_str = format_seconds(Int(elapsed_time))
 
         var rate = (
             step + 1
         ) / elapsed_time if elapsed_time > 0 and step > 0 else 0
-        var rate_str = format_float(rate.cast[dtype]()) + " it/s"
+        var rate_str = String(Int(rate)) + " it/s"
 
         var remaining_time = (self.total - step) / rate if rate > 0 else 0
         var remaining_str = format_seconds(Int(remaining_time))
