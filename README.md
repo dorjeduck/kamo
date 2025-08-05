@@ -69,7 +69,7 @@ Currently, this project is for our own educational purposes, with no immediate p
 
 ## Changelog
 
-* 2025.07.29
+* 2025.08.05
   * Updated to Mojo 25.5
 * 2025.07.29
   * Updated to Mojo 25.4
