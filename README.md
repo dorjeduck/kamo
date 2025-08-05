@@ -8,7 +8,7 @@ The following excerpt from the abstract of the paper [KAN: Kolmogorov-Arnold Net
 
 This repository explores KANs by porting the KAN Python implementation from [ML without tears](https://mlwithouttears.com/2024/05/15/a-from-scratch-implementation-of-kolmogorov-arnold-networks-kan/) to Mojo. This very readable Python implementation provides a flexible foundation, enabling instantiation as either a KAN or a classic MLP, which allows for various comparisons and experiments. The main focus is on understanding the core concepts rather than on optimizing performance or implementing all aspects of KANs.
 
-> **Note**: This project is based on the stable Mojo 25.4 release.
+> **Note**: This project is based on the stable Mojo 25.5 release.
 
 ## Empowering edges
 
@@ -69,6 +69,8 @@ Currently, this project is for our own educational purposes, with no immediate p
 
 ## Changelog
 
+* 2025.07.29
+  * Updated to Mojo 25.5
 * 2025.07.29
   * Updated to Mojo 25.4
 * 2024.09.17

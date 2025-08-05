@@ -99,9 +99,7 @@ struct MoMatrix[dtype: DType, simd_width: Int](
         self._mat_ptr = existing._mat_ptr
         self.rows = existing.rows
         self.cols = existing.cols
-        existing.rows = 0
-        existing.cols = 0
-        existing._mat_ptr = UnsafePointer[Scalar[dtype]]()
+       
 
     fn shape(self) -> String:
         return "(" + String(self.rows) + "," + String(self.cols) + ")"

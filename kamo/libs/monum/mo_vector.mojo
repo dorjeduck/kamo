@@ -54,8 +54,6 @@ struct MoVector[dtype: DType, simd_width: Int](
     fn __moveinit__(out self, owned existing: Self):
         self._vec_ptr = existing._vec_ptr
         self.size = existing.size
-        existing.size = 0
-        existing._vec_ptr = UnsafePointer[Scalar[dtype]]()
 
     fn __del__(owned self):
         self._vec_ptr.free()
@@ -203,8 +201,7 @@ struct MoVector[dtype: DType, simd_width: Int](
         var res = MoVector[dtype, simd_width](size)
         rand(res._vec_ptr, size)
         return res
- 
-    
+
     fn to_numpy(self) raises -> PythonObject:
         var np = Python.import_module("numpy")
 
@@ -215,7 +212,6 @@ struct MoVector[dtype: DType, simd_width: Int](
             type = np.float16
 
         var np_vec = np.zeros(self.size, dtype=type)
-
 
         memcpy(
             np_vec.__array_interface__["data"][0].unsafe_get_as_pointer[
@@ -228,7 +224,6 @@ struct MoVector[dtype: DType, simd_width: Int](
         # memcpy(np_vec_ptr, self._vec_ptr, len(self))
 
         return np_vec^
-    
 
     @always_inline
     fn zero(self) -> None:

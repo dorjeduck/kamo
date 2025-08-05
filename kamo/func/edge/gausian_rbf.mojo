@@ -3,7 +3,7 @@ from sys.terminate import exit
 from kamo import MN, MM, MV, SD, SD2
 
 
-@value
+@fieldwise_init
 struct GaussianRBF(EdgeFunc):
     var x_bounds: SD2
     var num_trainable_params: Int

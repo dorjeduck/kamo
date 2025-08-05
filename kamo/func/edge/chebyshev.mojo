@@ -8,7 +8,7 @@ alias MM = MoMatrix[dtype, simd_width]
 alias SD2 = InlineArray[SD, 2]
 
 
-@value
+@fieldwise_init
 struct ChebyshevPolynomial(EdgeFunc):
     var x_bounds: SD2
     var num_trainable_params: Int

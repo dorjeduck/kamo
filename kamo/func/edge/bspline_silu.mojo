@@ -4,7 +4,7 @@ from kamo.func import silu_mv
 
 alias tolerance_denominators = 1e-10
 
-@value
+@fieldwise_init
 struct BSplineSilu[SPLINE_DEGREE: Int = 3, ADD_SILU: Bool = True](EdgeFunc):
     var x_bounds: SD2
     var num_trainable_params: Int

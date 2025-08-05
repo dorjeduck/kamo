@@ -6,7 +6,7 @@ from kamo.func import tanh_act, ACF
 from kamo.neuron import NeuronType
 
 
-@value
+@fieldwise_init
 struct NeuronKAN[EF: EdgeFunc = BSplineSilu[3], x_bounds: SD2 = SD2(-1, 1)](
     NeuronType
 ):

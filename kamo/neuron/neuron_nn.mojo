@@ -4,7 +4,7 @@ from kamo.func.edge import EdgeFunc, BSplineSilu
 from kamo.neuron import NeuronType
 
 
-@value
+@fieldwise_init
 struct NeuronNN[ACTIVATION_FUNC: ACF = relu](NeuronType):
     var n_in: Int  # number edges
     var xin: MV  # edges input

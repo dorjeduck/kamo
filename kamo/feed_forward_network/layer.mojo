@@ -2,7 +2,7 @@ from kamo import MN, MM, MV, SD, SD2
 from kamo.neuron import NeuronType, NeuronID
 
 
-@value
+@fieldwise_init
 struct FullyConnectedLayer[NT: NeuronType, PHI_CACHING: Bool](
     Copyable & Movable
 ):

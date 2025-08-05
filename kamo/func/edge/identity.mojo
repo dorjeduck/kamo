@@ -10,7 +10,7 @@ alias MM = MoMatrix[dtype, simd_width]
 alias SD2 = InlineArray[SD, 2]
 
 
-@value
+@fieldwise_init
 struct Identity(EdgeFunc):
     var num_trainable_params: Int
 

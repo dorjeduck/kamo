@@ -6,8 +6,8 @@ from .utils import (
 )
 
 
-@value
-struct BarSettings:
+@fieldwise_init
+struct BarSettings(Copyable, Movable):
     var prefix: String
     var postfix: String
     var bar_size: Int
